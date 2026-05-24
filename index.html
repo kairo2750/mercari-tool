@@ -1,0 +1,2883 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>中国輸入 × メルカリ 管理ツール</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#fff;--bg2:#f5f5f2;--bg3:#eae9e5;
+  --text:#1a1a18;--text2:#666;--text3:#aaa;
+  --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);
+  --gn:#0a7a5f;--gnbg:#e0f5ee;
+  --rd:#993c1d;--rdbg:#faece7;
+  --am:#7a4800;--ambg:#faeeda;
+  --bl:#1558a0;--blbg:#e5f0fb;
+  --r:10px;--rs:7px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1c1a;--bg2:#242421;--bg3:#2b2b28;
+  --text:#e4e4df;--text2:#999;--text3:#555;
+  --border:rgba(255,255,255,0.09);--border2:rgba(255,255,255,0.18);
+  --gn:#5dcaa5;--gnbg:#043428;--rd:#f09970;--rdbg:#4a1b0c;
+  --am:#ef9f27;--ambg:#412402;--bl:#85b7eb;--blbg:#042750;
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Yu Gothic UI',sans-serif;background:var(--bg3);color:var(--text);font-size:14px;line-height:1.5;min-height:100vh}
+.hdr{position:sticky;top:0;z-index:200;background:var(--bg);border-bottom:0.5px solid var(--border)}
+.hi{max-width:1000px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:50px;padding:0 14px;gap:8px}
+.logo{font-size:14px;font-weight:700}
+.logo em{color:var(--gn);font-style:normal}
+.mbtn{padding:5px 10px;border:0.5px solid var(--border2);border-radius:var(--rs);background:var(--bg);color:var(--text);font-size:14px;cursor:pointer;min-width:32px;text-align:center}
+.mbtn:hover{background:var(--bg2)}
+.main{max-width:1000px;margin:0 auto;padding:14px 14px 80px}
+.dtabs{display:flex;gap:2px;background:var(--bg2);border-radius:var(--r);padding:3px;margin-bottom:14px;overflow-x:auto}
+.dtab{flex:1;min-width:60px;padding:7px 8px;font-size:12px;cursor:pointer;border:none;background:none;color:var(--text2);border-radius:var(--rs);font-family:inherit;font-weight:500;white-space:nowrap;text-align:center}
+.dtab.on{background:var(--bg);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.dtab:hover:not(.on){color:var(--text);background:rgba(0,0,0,.03)}
+@media(max-width:680px){.dtabs{display:none}}
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg);border-top:0.5px solid var(--border);z-index:200;padding-bottom:env(safe-area-inset-bottom,0)}
+.bi{display:flex;height:56px}
+.bitem{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;border:none;background:none;color:var(--text3);font-size:9px;font-family:inherit;padding:4px 2px}
+.bitem.on{color:var(--gn)}
+.bitem span:first-child{font-size:20px;line-height:1}
+@media(max-width:680px){.bnav{display:flex}}
+.mets{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:14px}
+.met{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px}
+.ml{font-size:10px;color:var(--text2);margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.mv{font-size:19px;font-weight:700}
+.mv.g{color:var(--gn)}.mv.r{color:var(--rd)}.mv.a{color:var(--am)}.mv.b{color:var(--bl)}
+.card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.ct{font-size:14px;font-weight:600;margin-bottom:14px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.fr.c3{grid-template-columns:1fr 1fr 1fr}
+.fr.f1{grid-template-columns:1fr}
+@media(max-width:520px){.fr,.fr.c3{grid-template-columns:1fr 1fr}}
+@media(max-width:340px){.fr{grid-template-columns:1fr}}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg label{font-size:12px;color:var(--text2);font-weight:500}
+.ht{font-size:10px;color:var(--text3);margin-top:1px}
+input,select,textarea{padding:9px 10px;border:0.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg);color:var(--text);font-family:inherit;width:100%;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--gn)}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+textarea{resize:vertical;min-height:56px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:9px 14px;border:0.5px solid var(--border2);border-radius:var(--rs);background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;min-height:40px;touch-action:manipulation;transition:all .15s;white-space:nowrap}
+.btn:hover{background:var(--bg2)}.btn:active{transform:scale(.97)}
+.btn.pri{background:var(--text);color:var(--bg);border-color:var(--text)}.btn.pri:hover{opacity:.85}
+.btn.dan{color:var(--rd);border-color:var(--rd)}.btn.dan:hover{background:var(--rdbg)}
+.btn.suc{color:var(--gn);border-color:var(--gn)}.btn.suc:hover{background:var(--gnbg)}
+.btn.inf{color:var(--bl);border-color:var(--bl)}.btn.inf:hover{background:var(--blbg)}
+.brow{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+hr.dv{border:none;border-top:0.5px solid var(--border);margin:12px 0}
+.bdg{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;font-weight:600}
+.bdg.ok{background:var(--gnbg);color:var(--gn)}.bdg.lw{background:var(--ambg);color:var(--am)}.bdg.no{background:var(--rdbg);color:var(--rd)}
+.bdg.op{background:var(--ambg);color:var(--am)}.bdg.cl{background:var(--gnbg);color:var(--gn)}
+.tw{overflow-x:auto;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;font-size:10px;font-weight:700;color:var(--text2);border-bottom:0.5px solid var(--border);background:var(--bg2);white-space:nowrap;text-transform:uppercase}
+td{padding:9px 10px;border-bottom:0.5px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.pp{color:var(--gn);font-weight:700}.pn{color:var(--rd);font-weight:700}
+.ib{border-radius:var(--rs);padding:10px 14px;font-size:12px;line-height:1.8;margin-bottom:12px}
+.ib.bl{background:var(--blbg);color:var(--bl)}.ib.am{background:var(--ambg);color:var(--am)}.ib.gr{background:var(--gnbg);color:var(--gn)}
+.rb{background:var(--bg2);border-radius:var(--rs);padding:14px;margin-top:12px}
+.rr{display:flex;justify-content:space-between;padding:4px 0;font-size:14px}
+.rr .rl{color:var(--text2)}.rr.tot{border-top:0.5px solid var(--border2);margin-top:8px;padding-top:10px;font-weight:700}
+.tag{font-size:11px;background:var(--bg2);border-radius:4px;padding:2px 6px;color:var(--text3);display:inline-block}
+.empty{text-align:center;padding:40px 16px;color:var(--text3);font-size:14px;line-height:2}
+.mok{color:var(--gn);font-size:13px;margin-top:8px}.mer{color:var(--rd);font-size:13px;margin-top:8px}
+.sh{font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 8px}
+.batchbox{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px}
+.batchbox.open{border:1.5px solid var(--am)}
+.spbtn{padding:5px 9px;border:0.5px solid var(--border2);border-radius:20px;background:var(--bg);color:var(--text2);font-size:11px;cursor:pointer;font-family:inherit;white-space:nowrap;line-height:1.3;text-align:center;transition:all .15s}
+.spbtn:hover{border-color:var(--bl);color:var(--bl)}.spbtn.sel{border-color:var(--bl);background:var(--blbg);color:var(--bl);font-weight:600}
+.spg{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.04em;width:100%;margin:6px 0 2px}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;padding:16px}
+.ov.open{display:flex}
+.modal{background:var(--bg);border-radius:var(--r);padding:20px;width:100%;max-width:400px;max-height:92vh;overflow-y:auto}
+.mtitle{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+.mcls{background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:0 4px;line-height:1}
+</style>
+</head>
+<body>
+
+<!-- バックアップ警告バナー -->
+<div id="bk-banner" style="display:none;position:sticky;top:0;z-index:300;background:#7a4800;color:#fff;font-size:13px;padding:9px 16px;align-items:center;justify-content:space-between;gap:10px">
+  <span id="bk-banner-msg"></span>
+  <div style="display:flex;gap:8px;flex-shrink:0">
+    <button onclick="openOv('ov-backup')" style="background:rgba(255,255,255,0.2);border:none;color:#fff;border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:inherit;font-weight:600">今すぐバックアップ</button>
+    <button onclick="g('bk-banner').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:18px;cursor:pointer;padding:0 4px;line-height:1">✕</button>
+  </div>
+</div>
+
+<div class="hdr"><div class="hi">
+  <div class="logo">中国輸入 <em>×</em> メルカリ</div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span id="rbadge" onclick="fetchRate()" title="クリックで更新" style="font-size:11px;color:var(--text3);cursor:pointer;white-space:nowrap">🔄 取得中…</span>
+    <button class="btn" style="font-size:11px;padding:5px 10px" onclick="openOv('ov-sync')">🔄 同期</button>
+    <button class="btn" style="font-size:11px;padding:5px 10px" onclick="exportCSV()">📥 CSV</button>
+    <button class="btn" id="bk-btn" style="font-size:11px;padding:5px 10px" onclick="openBkModal()">💾 バックアップ</button>
+  </div>
+</div></div>
+
+
+<div class="main">
+  <div class="dtabs" id="dtabs"></div>
+  <div id="pg-dashboard"></div>
+  <div id="pg-inventory" style="display:none"></div>
+  <div id="pg-sales" style="display:none"></div>
+  <div id="pg-shipments" style="display:none"></div>
+  <div id="pg-calc" style="display:none"></div>
+  <div id="pg-add" style="display:none"></div>
+  <div id="pg-history" style="display:none"></div>
+  <div id="pg-tax" style="display:none"></div>
+</div>
+
+<nav class="bnav"><div class="bi">
+  <button class="bitem on" data-tab="dashboard"><span>📊</span>ダッシュ</button>
+  <button class="bitem" data-tab="inventory"><span>📦</span>在庫</button>
+  <button class="bitem" data-tab="sales"><span>💴</span>売上</button>
+  <button class="bitem" data-tab="shipments"><span>🚢</span>仕入れ</button>
+  <button class="bitem" data-tab="add"><span>➕</span>商品</button>
+</div></nav>
+
+<!-- SELL -->
+<div class="ov" id="ov-sell"><div class="modal">
+  <div class="mtitle">✓ 売上を記録 <button class="mcls" onclick="closeOv('ov-sell')">✕</button></div>
+  <div id="sell-pname" style="font-weight:700;font-size:15px;color:var(--gn);margin-bottom:12px"></div>
+  <div class="fr"><div class="fg"><label>売れた日</label><input type="date" id="sell-date"></div><div class="fg" id="qty-normal-area"><label>数量</label><input type="number" id="sell-qty" value="1" min="1"><span class="ht" id="sell-hint"></span></div><div class="fg" id="price-normal-area"><label>販売価格（円）</label><input type="number" id="sell-price" min="1"></div></div>
+  <div style="margin-bottom:10px">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <button type="button" id="set-toggle" class="spbtn" onclick="toggleSetMode()">🔗 セット販売</button>
+      <span class="ht" id="set-toggle-hint"></span>
+    </div>
+    <div id="set-fields" style="display:none">
+      <div class="fr c3">
+        <div class="fg">
+          <label>セット点数</label>
+          <input type="number" id="sell-setqty" value="2" min="2" oninput="onSetQtyChange()">
+        </div>
+        <div class="fg">
+          <label>セット価格（円）</label>
+          <input type="number" id="sell-setprice" min="1" placeholder="例: 980" oninput="updateSetHint()">
+        </div>
+        <div class="fg">
+          <label>送料（円）</label>
+          <input type="number" id="sell-setship" min="0" placeholder="デフォルト" oninput="updateSetHint()">
+        </div>
+      </div>
+      <span class="ht" id="set-calc-hint" style="color:var(--gn)"></span>
+    </div>
+  </div>
+  <div class="fg" style="margin-bottom:12px"><label>販売プラットフォーム</label>
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <button type="button" class="spbtn sel" id="plt-merc" onclick="setPlatform('mercari')">メルカリ（10%）</button>
+      <button type="button" class="spbtn" id="plt-furima" onclick="setPlatform('furima')">Yahooフリマ（5%）</button>
+    </div>
+    <input type="hidden" id="sell-fee" value="10">
+  </div>
+  <div class="brow" style="margin-top:0"><button class="btn pri" style="flex:1" onclick="confirmSell()">記録する</button><button class="btn" onclick="closeOv('ov-sell')">キャンセル</button></div>
+  <div id="sell-msg"></div>
+</div></div>
+
+<!-- BUNDLE SELL -->
+<div class="ov" id="ov-bundle"><div class="modal" style="max-width:480px">
+  <div class="mtitle">🛍 まとめ売り <button class="mcls" onclick="closeOv('ov-bundle')">✕</button></div>
+  <div class="fr">
+    <div class="fg"><label>売れた日</label><input type="date" id="bnd-date"></div>
+    <div class="fg"><label>手数料率（%）</label><input type="number" id="bnd-fee" value="10" step="0.1" min="0" max="100" oninput="bndCalc()"></div>
+  </div>
+  <div class="fg" style="margin:10px 0 4px">
+    <label>プラットフォーム</label>
+    <div style="display:flex;gap:6px;margin-top:6px">
+      <button type="button" class="spbtn sel" id="bnd-plt-merc" onclick="setBndPlatform('mercari')">メルカリ（10%）</button>
+      <button type="button" class="spbtn" id="bnd-plt-furima" onclick="setBndPlatform('furima')">Yahooフリマ（5%）</button>
+    </div>
+    <input type="hidden" id="bnd-platform" value="mercari">
+  </div>
+  <hr class="dv" style="margin:10px 0">
+  <div id="bnd-rows" style="margin-bottom:8px"></div>
+  <button class="btn" style="font-size:12px;padding:5px 10px;min-height:0;margin-bottom:12px" onclick="bndAddRow()">＋ 商品を追加</button>
+  <div class="fr">
+    <div class="fg"><label>合計売上（円）</label><input type="number" id="bnd-price" placeholder="例: 3000" oninput="bndCalc()"></div>
+    <div class="fg"><label>実際の送料（円）</label><input type="number" id="bnd-ship" placeholder="例: 600" oninput="bndCalc()"></div>
+  </div>
+  <div id="bnd-prev" style="display:none;background:var(--bg2);border-radius:var(--rs);padding:10px 12px;margin-top:10px;font-size:13px"></div>
+  <div id="bnd-msg" style="margin-top:8px"></div>
+  <div class="brow" style="margin-top:12px">
+    <button class="btn pri" style="flex:1" onclick="confirmBundleSell()">登録</button>
+    <button class="btn" onclick="closeOv('ov-bundle')">キャンセル</button>
+  </div>
+</div></div>
+
+<!-- INITIAL DATA -->
+<div class="ov" id="ov-init"><div class="modal" style="max-width:420px">
+  <div class="mtitle">📦 初期データ入力 <button class="mcls" onclick="closeOv('ov-init')">✕</button></div>
+  <div style="display:flex;gap:3px;background:var(--bg2);border-radius:var(--rs);padding:3px;margin-bottom:14px">
+    <button class="dtab on" id="init-tab-stock" onclick="setInitTab('stock')" style="flex:1">📦 初期在庫</button>
+    <button class="dtab" id="init-tab-sales" onclick="setInitTab('sales')" style="flex:1">📋 期初売上</button>
+  </div>
+  <div id="init-stock-panel">
+    <div class="ib bl" style="margin-bottom:12px">仕入れ済みの在庫を登録します。売上履歴は記録されません。</div>
+    <div class="fg" style="margin-bottom:10px"><label>商品</label><select id="is-pid"><option value="">選択してください</option></select></div>
+    <div class="fr">
+      <div class="fg"><label>数量</label><input type="number" id="is-qty" value="1" min="1"></div>
+      <div class="fg"><label>仕入れ日</label><input type="date" id="is-date" onchange="fetchRateForDate('is-rate',this.value);isCalc()"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>原価/個（元）</label><input type="number" id="is-cost-cny" min="0" placeholder="例: 80" step="0.01" oninput="isCalc()"></div>
+      <div class="fg"><label>為替レート <button type="button" style="font-size:10px;padding:1px 5px;margin-left:4px" class="btn" onclick="fetchRateForDate('is-rate',gv('is-date'));isCalc()">再取得</button></label><input type="number" id="is-rate" value="21" step="0.1" oninput="isCalc()"></div>
+    </div>
+    <div id="is-prev" style="display:none;background:var(--blbg);border-radius:var(--rs);padding:8px 12px;font-size:13px;color:var(--bl);margin-bottom:8px"></div>
+    <div class="brow" style="margin-top:12px"><button class="btn pri" style="flex:1" onclick="confirmInitStock()">登録する</button><button class="btn" onclick="closeOv('ov-init')">キャンセル</button></div>
+    <div id="is-msg"></div>
+  </div>
+  <div id="init-sales-panel" style="display:none">
+    <div class="ib am" style="margin-bottom:12px">今年仕入れてすでに売れた分を入力します。2026年4月1日の売上として集計されます。</div>
+    <div class="fg" style="margin-bottom:10px"><label>商品</label><select id="iss-pid" onchange="issAutoFill()"><option value="">選択してください</option></select></div>
+    <div class="fr" style="margin-bottom:10px">
+      <div class="fg"><label>販売済み数量</label><input type="number" id="iss-qty" value="1" min="1"></div>
+      <div class="fg"><label>販売価格/個（円）</label><input type="number" id="iss-sell" placeholder="例: 2500" min="0"></div>
+    </div>
+    <div class="fr" style="margin-bottom:12px">
+      <div class="fg"><label>手数料率（%）</label><input type="number" id="iss-fee" value="10" step="0.1" min="0" max="100"></div>
+      <div class="fg"><label>送料/個（円）</label><input type="number" id="iss-ship" value="0" min="0"></div>
+    </div>
+    <div class="brow" style="margin-top:0"><button class="btn pri" style="flex:1" onclick="confirmInitSales()">登録する</button><button class="btn" onclick="closeOv('ov-init')">キャンセル</button></div>
+    <div id="iss-msg"></div>
+  </div>
+</div></div>
+
+<!-- FIXED COST -->
+<div class="ov" id="ov-fixed"><div class="modal" style="max-width:360px">
+  <div class="mtitle">🗂 固定費を追加 <button class="mcls" onclick="closeOv('ov-fixed')">✕</button></div>
+  <div class="fr f1" style="margin-bottom:10px">
+    <div class="fg"><label>費用名</label><input type="text" id="fc-name" placeholder="例: 代行業者月会費"></div>
+  </div>
+  <div class="fr f1" style="margin-bottom:14px">
+    <div class="fg"><label>月額（円）</label><input type="number" id="fc-amount" min="1" placeholder="例: 9800"></div>
+  </div>
+  <div class="brow" style="margin-top:0"><button class="btn pri" style="flex:1" onclick="confirmAddFixed()">追加する</button><button class="btn" onclick="closeOv('ov-fixed')">キャンセル</button></div>
+  <div id="fc-msg"></div>
+</div></div>
+
+<!-- RESTOCK -->
+<div class="ov" id="ov-restock"><div class="modal" style="max-width:440px">
+  <div class="mtitle">📦 在庫補充 <button class="mcls" onclick="closeOv('ov-restock')">✕</button></div>
+  <div id="rs-pname" style="font-weight:700;color:var(--bl);margin-bottom:4px"></div>
+  <div id="rs-stock" style="font-size:12px;color:var(--text2);margin-bottom:12px"></div>
+  <div class="fr c3">
+    <div class="fg"><label>仕入れ日</label><input type="date" id="rs-date" onchange="fetchRateForDate('rs-rate',this.value)"></div>
+    <div class="fg"><label>数量</label><input type="number" id="rs-qty" value="1" min="1"></div>
+  </div>
+  <div class="fr c3">
+    <div class="fg"><label>仕入値/個（元）</label><input type="number" id="rs-cny" step="0.01" oninput="rsCalc()"></div>
+    <div class="fg"><label>為替レート <button type="button" style="font-size:10px;padding:1px 5px;margin-left:4px" class="btn" onclick="fetchRateForDate('rs-rate',gv('rs-date'))">再取得</button></label><input type="number" id="rs-rate" value="21" step="0.1" oninput="rsCalc()"></div>
+    <div class="fg"><label>国内送料（元）</label><input type="number" id="rs-dom" value="0" oninput="rsCalc()"></div>
+  </div>
+  <div class="fr c3">
+    <div class="fg"><label>国際送料合計（元）</label><input type="number" id="rs-intl" value="0" oninput="rsCalc()"><span class="ht">この便の全商品合計</span></div>
+    <div class="fg"><label>関税合計（円）</label><input type="number" id="rs-tariff" value="0" oninput="rsCalc()"><span class="ht">この便の全商品合計</span></div>
+    <div class="fg"><label>この便の総個数</label><input type="number" id="rs-iq" value="1" min="1" oninput="rsCalc()"></div>
+  </div>
+  <div id="rs-prev" class="rb" style="display:none;margin-top:0;margin-bottom:12px"></div>
+  <div class="fg" style="margin-bottom:12px"><label>メモ（任意）</label><input type="text" id="rs-memo" placeholder="例: タオバオ"></div>
+  <div class="brow" style="margin-top:0"><button class="btn pri" style="flex:1" onclick="confirmRestock()">補充を登録</button><button class="btn" onclick="closeOv('ov-restock')">キャンセル</button></div>
+  <div id="rs-msg"></div>
+</div></div>
+
+<!-- DEFECT -->
+<div class="ov" id="ov-defect"><div class="modal" style="max-width:430px">
+  <div class="mtitle">⚠️ 不良品を記録 <button class="mcls" onclick="closeOv('ov-defect')">✕</button></div>
+  <div id="df-pname" style="font-weight:700;color:var(--rd);margin-bottom:4px"></div>
+  <div id="df-stock" style="font-size:12px;color:var(--text2);margin-bottom:10px"></div>
+  <div style="display:flex;gap:3px;background:var(--bg2);border-radius:var(--rs);padding:3px;margin-bottom:12px">
+    <button class="dtab on" id="df-tab-before" onclick="setDefTiming('before')" style="flex:1">📦 販売前</button>
+    <button class="dtab" id="df-tab-after" onclick="setDefTiming('after')" style="flex:1">📬 販売後（返品）</button>
+  </div>
+  <div class="fr">
+    <div class="fg"><label>発生日</label><input type="date" id="df-date"></div>
+    <div class="fg"><label>数量</label><input type="number" id="df-qty" value="1" min="1"></div>
+  </div>
+  <div class="fg" style="margin-bottom:10px"><label>理由</label><select id="df-reason"></select></div>
+  <div id="df-ship-sec" style="display:none;margin-bottom:12px">
+    <label style="display:block;font-size:12px;font-weight:600;margin-bottom:6px;color:var(--text2)">国内送料（返送・再送など）</label>
+    <div id="df-spw" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px"></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="number" id="df-ship" value="0" style="max-width:110px">
+      <span style="font-size:11px;color:var(--rd)">円（損失として記録）</span>
+    </div>
+  </div>
+  <div class="fg" style="margin-bottom:12px"><label>メモ（任意）</label><input type="text" id="df-memo" placeholder="補足があれば"></div>
+  <div class="brow" style="margin-top:0"><button class="btn dan" style="flex:1" onclick="confirmDefect()">記録する</button><button class="btn" onclick="closeOv('ov-defect')">キャンセル</button></div>
+  <div id="df-msg"></div>
+</div></div>
+
+<!-- PRODUCT DETAIL -->
+<div class="ov" id="ov-product"><div class="modal" style="max-width:620px">
+  <div class="mtitle"><span id="pm-name"></span><button class="mcls" onclick="closeOv('ov-product')">✕</button></div>
+  <div id="pm-body"></div>
+</div></div>
+
+<!-- EDIT ITEM -->
+<div class="ov" id="ov-edititem"><div class="modal" style="max-width:360px">
+  <div class="mtitle">✏️ 商品を編集 <button class="mcls" onclick="closeOv('ov-edititem')">✕</button></div>
+  <div class="fg" style="margin-bottom:10px"><label>商品</label><select id="ei-pid"></select></div>
+  <div class="fr"><div class="fg"><label>数量</label><input type="number" id="ei-qty" min="1"></div><div class="fg"><label>仕入値/個（元）</label><input type="number" id="ei-cny" step="0.01"></div></div>
+  <div class="brow" style="margin-top:8px"><button class="btn pri" style="flex:1" onclick="confirmEditItem()">保存</button><button class="btn" onclick="closeOv('ov-edititem')">キャンセル</button></div>
+  <div id="ei-msg"></div>
+</div></div>
+
+<!-- SYNC -->
+<div class="ov" id="ov-sync"><div class="modal" style="max-width:400px">
+  <div class="mtitle">🔄 データ同期 <button class="mcls" onclick="closeOv('ov-sync')">✕</button></div>
+  <div style="display:flex;gap:3px;background:var(--bg2);border-radius:var(--rs);padding:3px;margin-bottom:14px">
+    <button class="dtab on" id="st-exp" onclick="showSyncTab('exp')">書き出し</button>
+    <button class="dtab" id="st-imp" onclick="showSyncTab('imp')">読み込み</button>
+  </div>
+  <div id="s-exp"><p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.7">データをJSONファイルで書き出します。</p><button class="btn pri" onclick="exportJSON()">JSONファイルを保存</button></div>
+  <div id="s-imp" style="display:none"><p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.7"><strong style="color:var(--rd)">⚠️ 現在のデータに追加されます</strong></p>
+    <div style="border:1.5px dashed var(--border2);border-radius:var(--rs);padding:20px;text-align:center;cursor:pointer;font-size:13px;color:var(--text2)" onclick="document.getElementById('imp-f').click()">📂 JSONファイルを選択</div>
+    <input type="file" id="imp-f" accept=".json" style="display:none" onchange="handleImport(event)">
+    <div id="imp-prev" style="display:none;margin-top:10px;font-size:12px;color:var(--text2);line-height:1.8;background:var(--bg2);border-radius:var(--rs);padding:12px"></div>
+  </div>
+</div></div>
+
+<!-- バックアップモーダル -->
+<div class="ov" id="ov-backup"><div class="modal" style="max-width:420px">
+  <div class="mtitle">💾 バックアップ <button class="mcls" onclick="closeOv('ov-backup')">✕</button></div>
+  <div id="bk-last" style="font-size:13px;margin-bottom:14px;padding:10px 14px;border-radius:var(--rs);background:var(--bg2);color:var(--text2)"></div>
+
+  <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)">📤 書き出し</div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:10px;line-height:1.7">全データ（商品・仕入れ・売上・固定費・不良品）をJSONファイルとして保存します。定期的に実行してください。</p>
+  <button class="btn suc" style="width:100%;justify-content:center;margin-bottom:18px" onclick="backupExport()">💾 今すぐバックアップを保存</button>
+
+  <hr class="dv">
+  <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)">📥 読み込み（復元）</div>
+  <p style="font-size:13px;color:var(--text2);margin-bottom:10px;line-height:1.7"><strong style="color:var(--rd)">⚠️ 上書きモードは現在のデータが全て消えます。</strong></p>
+  <div style="border:1.5px dashed var(--border2);border-radius:var(--rs);padding:20px;text-align:center;cursor:pointer;font-size:13px;color:var(--text2)" onclick="document.getElementById('bk-imp-f').click()">📂 バックアップファイルを選択</div>
+  <input type="file" id="bk-imp-f" accept=".json" style="display:none" onchange="backupImportPreview(event)">
+  <div id="bk-imp-prev" style="display:none;margin-top:10px;font-size:12px;color:var(--text2);line-height:1.8;background:var(--bg2);border-radius:var(--rs);padding:12px"></div>
+</div></div>
+
+<script>
+// ====================================================
+// STATE
+// ====================================================
+let products   = jl('mp',  []);
+let shipments  = jl('ms',  []);
+let salesLog   = jl('msl', []);
+let defectLog  = jl('mdl', []);
+let fixedCosts = jl('mfc', []);
+let curMonth  = new Date().toISOString().slice(0,7);
+let activeTab = 'dashboard';
+let _rate = null;
+let _spid = null, _rpid = null, _dpid = null, _eiSid = null, _eiIdx = null;
+let _impData = null;
+let _taxYear = new Date().getFullYear().toString();
+let _rateCache = {};
+let _sellPlatform = 'mercari';
+let _setMode = false;
+let _taxLoadGen = 0;
+
+function jl(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
+function sv(){localStorage.setItem('mp',JSON.stringify(products));localStorage.setItem('ms',JSON.stringify(shipments));localStorage.setItem('msl',JSON.stringify(salesLog));localStorage.setItem('mdl',JSON.stringify(defectLog));localStorage.setItem('mfc',JSON.stringify(fixedCosts))}
+
+// ====================================================
+// HELPERS
+// ====================================================
+function fy(n){return '¥'+Math.round(n).toLocaleString('ja-JP')}
+function mSales(ym){return salesLog.filter(s=>s.date.startsWith(ym))}
+function mShips(ym){return shipments.filter(s=>s.date.startsWith(ym))}
+
+function getStock(pid){
+  let b=0,s=0,d=0;
+  shipments.filter(sh=>sh.status==='closed'||!sh.status).forEach(sh=>sh.items.forEach(it=>{if(it.pid===pid)b+=it.qty}));
+  salesLog.forEach(sl=>{if(sl.pid===pid)s+=sl.qty});
+  defectLog.forEach(dl=>{if(dl.pid===pid)d+=dl.qty});
+  return b-s-d;
+}
+function getLatestCost(pid){
+  const closed=shipments.filter(sh=>sh.status==='closed'||!sh.status);
+  for(let i=closed.length-1;i>=0;i--){const it=closed[i].items.find(x=>x.pid===pid);if(it)return it.totalCostPer}
+  const p=products.find(x=>x.id===pid);return p?.defaultCostJpy||0;
+}
+function getFifoCost(pid,qty){
+  const layers=[];
+  const closed=shipments.filter(sh=>sh.status==='closed'||!sh.status).sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.id-b.id);
+  closed.forEach(sh=>sh.items.forEach(it=>{if(it.pid===pid&&it.qty>0)layers.push({qty:it.qty,cost:it.totalCostPer||0})}));
+  let consumed=0;
+  salesLog.forEach(sl=>{if(sl.pid===pid)consumed+=sl.qty});
+  defectLog.forEach(dl=>{if(dl.pid===pid)consumed+=dl.qty});
+  let rem=consumed,totalCost=0,taken=0;
+  for(const layer of layers){
+    if(rem>=layer.qty){rem-=layer.qty;continue}
+    const avail=layer.qty-rem;rem=0;
+    const take=Math.min(avail,qty-taken);
+    totalCost+=take*layer.cost;taken+=take;
+    if(taken>=qty)break;
+  }
+  if(taken===0)return getLatestCost(pid);
+  return Math.round(totalCost/taken);
+}
+// 不良品損失合計：原価×数 ＋ 送料
+function calcDefLoss(entries){return entries.reduce((s,d)=>s+getLatestCost(d.pid)*d.qty+(d.shipping||0),0)}
+function recalc(sh){
+  const tq=sh.items.reduce((s,it)=>s+it.qty,0);
+  const ip=tq>0?sh.intlJpy/tq:0;
+  const tp=tq>0?(sh.tariffJpy||0)/tq:0;
+  sh.totalQty=tq;sh.intlPer=ip;sh.tariffPer=tp;
+  sh.items=sh.items.map(it=>{
+    const cj=Math.round(it.cnyPer*sh.rate);
+    const dj=it.domPerJpy||0;
+    const tj=Math.round(tp);
+    const ij=Math.round(ip);
+    return{...it,cnyJpy:cj,domJpy:dj,tariffJpy:tj,intlJpy:ij,totalCostPer:cj+dj+tj+ij};
+  });
+  sh.totalCostJpy=sh.items.reduce((s,it)=>s+it.totalCostPer*it.qty,0);
+  return sh;
+}
+function showMsg(id,msg,type){const el=document.getElementById(id);if(!el)return;el.className=type==='ok'?'mok':'mer';el.textContent=msg;setTimeout(()=>{if(el)el.textContent=''},3000)}
+function g(id){return document.getElementById(id)}
+function gv(id){const el=g(id);return el?el.value:''}
+function sv2(id,v){const el=g(id);if(el)el.value=v}
+
+// カタカナ→ひらがな変換 + 長音符除去（検索正規化用）
+function kataToHira(s){return(s||'').replace(/[ァ-ヶ]/g,c=>String.fromCharCode(c.charCodeAt(0)-0x60)).replace(/ー/g,'')}
+
+// ローマ字→ひらがな変換（検索用）
+function romaToHira(s){
+  if(!s)return'';
+  s=s.toLowerCase();
+  const tbl=[
+    ['shi','し'],['chi','ち'],['tsu','つ'],['sha','しゃ'],['shu','しゅ'],['sho','しょ'],
+    ['cha','ちゃ'],['chu','ちゅ'],['cho','ちょ'],['tya','ちゃ'],['tyu','ちゅ'],['tyo','ちょ'],
+    ['kya','きゃ'],['kyu','きゅ'],['kyo','きょ'],['gya','ぎゃ'],['gyu','ぎゅ'],['gyo','ぎょ'],
+    ['nya','にゃ'],['nyu','にゅ'],['nyo','にょ'],['hya','ひゃ'],['hyu','ひゅ'],['hyo','ひょ'],
+    ['bya','びゃ'],['byu','びゅ'],['byo','びょ'],['pya','ぴゃ'],['pyu','ぴゅ'],['pyo','ぴょ'],
+    ['mya','みゃ'],['myu','みゅ'],['myo','みょ'],['rya','りゃ'],['ryu','りゅ'],['ryo','りょ'],
+    ['ja','じゃ'],['ji','じ'],['ju','じゅ'],['je','じぇ'],['jo','じょ'],
+    ['fa','ふぁ'],['fi','ふぃ'],['fu','ふ'],['fe','ふぇ'],['fo','ふぉ'],
+    ['ka','か'],['ki','き'],['ku','く'],['ke','け'],['ko','こ'],
+    ['sa','さ'],['si','し'],['su','す'],['se','せ'],['so','そ'],
+    ['ta','た'],['ti','ち'],['tu','つ'],['te','て'],['to','と'],
+    ['na','な'],['ni','に'],['nu','ぬ'],['ne','ね'],['no','の'],
+    ['ha','は'],['hi','ひ'],['he','へ'],['ho','ほ'],
+    ['ma','ま'],['mi','み'],['mu','む'],['me','め'],['mo','も'],
+    ['ya','や'],['yu','ゆ'],['yo','よ'],
+    ['ra','ら'],['ri','り'],['ru','る'],['re','れ'],['ro','ろ'],
+    ['wa','わ'],['wo','を'],['wi','い'],['we','え'],
+    ['ga','が'],['gi','ぎ'],['gu','ぐ'],['ge','げ'],['go','ご'],
+    ['za','ざ'],['zi','じ'],['zu','ず'],['ze','ぜ'],['zo','ぞ'],
+    ['da','だ'],['di','ぢ'],['du','づ'],['de','で'],['do','ど'],
+    ['ba','ば'],['bi','び'],['bu','ぶ'],['be','べ'],['bo','ぼ'],
+    ['pa','ぱ'],['pi','ぴ'],['pu','ぷ'],['pe','ぺ'],['po','ぽ'],
+    ['a','あ'],['i','い'],['u','う'],['e','え'],['o','お'],['n','ん']
+  ];
+  let r='',i=0;
+  while(i<s.length){
+    // っ: 同じ子音が連続
+    if(i+1<s.length&&s[i]===s[i+1]&&'bcdfghjklmnpqrstvwxyz'.includes(s[i])){r+='っ';i++;continue}
+    let matched=false;
+    for(const[from,to]of tbl){
+      if(s.startsWith(from,i)){r+=to;i+=from.length;matched=true;break}
+    }
+    if(!matched){r+=s[i];i++}
+  }
+  return r;
+}
+
+// ====================================================
+// MODAL
+// ====================================================
+function openOv(id){g(id)?.classList.add('open')}
+function closeOv(id){g(id)?.classList.remove('open')}
+document.addEventListener('click',e=>{if(e.target.classList.contains('ov'))e.target.classList.remove('open')});
+
+// ====================================================
+// MONTH
+// ====================================================
+function initMonth(){sv2('mpick',curMonth);updMLabel()}
+function updMLabel(){const[y,m]=curMonth.split('-');if(g('mlbl'))g('mlbl').textContent=y+'年'+parseInt(m)+'月'}
+function onMch(){curMonth=gv('mpick');updMLabel();renderActive()}
+function chMonth(d){const dt=new Date(curMonth+'-01');dt.setMonth(dt.getMonth()+d);curMonth=dt.toISOString().slice(0,7);sv2('mpick',curMonth);updMLabel();renderActive()}
+
+// ====================================================
+// TABS
+// ====================================================
+const TABS=[
+  {id:'dashboard',lbl:'📊 ダッシュ'},{id:'inventory',lbl:'📦 在庫'},{id:'sales',lbl:'💴 売上'},
+  {id:'shipments',lbl:'🚢 仕入れ'},{id:'calc',lbl:'🧮 計算機'},{id:'add',lbl:'➕ 商品登録'},{id:'history',lbl:'📅 月別推移'},
+  {id:'tax',lbl:'🧾 確定申告'}
+];
+function buildTabs(){
+  const el=g('dtabs');if(!el)return;
+  el.innerHTML=TABS.map(t=>`<button class="dtab${t.id===activeTab?' on':''}" onclick="switchTab('${t.id}')">${t.lbl}</button>`).join('');
+  document.querySelectorAll('.bitem').forEach(b=>b.classList.toggle('on',b.dataset.tab===activeTab));
+}
+function switchTab(t){
+  TABS.forEach(x=>{const el=g('pg-'+x.id);if(el)el.style.display=x.id===t?'block':'none'});
+  activeTab=t;buildTabs();renderActive();
+}
+function renderActive(){
+  if(activeTab==='dashboard')renderDashboard();
+  else if(activeTab==='inventory')renderInventory();
+  else if(activeTab==='sales')renderSales();
+  else if(activeTab==='shipments')renderShipments();
+  else if(activeTab==='calc')renderCalc();
+  else if(activeTab==='add')renderAdd();
+  else if(activeTab==='history')renderHistory();
+  else if(activeTab==='tax')renderTax();
+}
+
+// ====================================================
+// EXCHANGE RATE
+// ====================================================
+async function fetchRate(){
+  const b=g('rbadge');if(b){b.textContent='取得中…';b.style.color='var(--text3)'}
+  try{
+    const r=await fetch('https://open.er-api.com/v6/latest/CNY');
+    const d=await r.json();
+    const rate=d.rates?.JPY;if(!rate)throw 0;
+    _rate=Math.round(rate*10)/10;
+    setRates(_rate);
+    if(b){b.textContent=`1元=${_rate}円 🔄`;b.style.color='var(--gn)'}
+  }catch(e){if(b){b.textContent='取得失敗 🔄';b.style.color='var(--rd)'}}
+}
+function setRates(r){['sh-rate','rs-rate','c-rate'].forEach(id=>sv2(id,r))}
+async function updateProvisionalRates(){
+  const today=new Date().toISOString().slice(0,10);
+  const pending=shipments.filter(s=>s.rateProvisional&&s.date<=today);
+  if(!pending.length)return;
+  let updated=0;
+  for(const sh of pending){
+    let rounded=null;
+    try{
+      const r=await fetch(`https://api.frankfurter.app/${sh.date}?from=EUR&to=CNY,JPY`);
+      const d=await r.json();
+      const cny=d.rates?.CNY,jpy=d.rates?.JPY;
+      if(cny&&jpy)rounded=Math.round((jpy/cny)*10)/10;
+    }catch(e){}
+    if(!rounded){
+      try{
+        const r=await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${sh.date}/v1/currencies/cny.json`);
+        const d=await r.json();
+        const jpy=d.cny?.jpy;
+        if(jpy)rounded=Math.round(jpy*10)/10;
+      }catch(e){}
+    }
+    if(rounded){
+      sh.rate=rounded;
+      _rateCache[sh.date]=rounded;
+      recalc(sh);
+      delete sh.rateProvisional;
+      updated++;
+    }
+  }
+  if(updated){sv();toast(`${updated}件の仕入れの為替レートを実際のレートに自動更新しました`)}
+}
+async function fetchRateForDate(rateFieldId,date){
+  if(!date)return;
+  const today=new Date().toISOString().slice(0,10);
+  if(date>today){
+    const rate=_rate||(_rateCache[today])||null;
+    if(rate){sv2(rateFieldId,rate);const input=g(rateFieldId);if(input){input.style.color='var(--am)';input.title='未来日のため本日レートを使用'}}
+    else await fetchRateForDate(rateFieldId,today);
+    return;
+  }
+  if(date===today&&_rate){sv2(rateFieldId,_rate);return}
+  if(_rateCache[date]){sv2(rateFieldId,_rateCache[date]);return}
+  const input=g(rateFieldId);
+  if(input){input.disabled=true;input.style.opacity='0.5'}
+  let rounded=null;
+  try{
+    const r=await fetch(`https://api.frankfurter.app/${date}?from=EUR&to=CNY,JPY`);
+    const d=await r.json();
+    const cny=d.rates?.CNY,jpy=d.rates?.JPY;
+    if(cny&&jpy)rounded=Math.round((jpy/cny)*10)/10;
+  }catch(e){}
+  if(!rounded){
+    try{
+      const r=await fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@${date}/v1/currencies/cny.json`);
+      const d=await r.json();
+      const jpy=d.cny?.jpy;
+      if(jpy)rounded=Math.round(jpy*10)/10;
+    }catch(e){}
+  }
+  if(rounded){
+    _rateCache[date]=rounded;sv2(rateFieldId,rounded);
+    if(input){input.style.color='var(--gn)';input.title=''}
+  }else{
+    if(input){input.style.color='var(--rd)';input.title='レート取得失敗'}
+    toast('レート取得失敗 — 手動で入力してください');
+  }
+  if(input){input.disabled=false;input.style.opacity='1'}
+}
+
+// ====================================================
+// DASHBOARD
+// ====================================================
+function renderDashboard(){
+  const pg=g('pg-dashboard');if(!pg)return;
+  const [dy,dm]=curMonth.split('-');
+  const dnav=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <button class="mbtn" onclick="chMonth(-1)">◀</button>
+    <span style="font-weight:700;font-size:15px;min-width:90px;text-align:center">${dy}年${parseInt(dm)}月</span>
+    <button class="mbtn" onclick="chMonth(1)">▶</button>
+    <button class="btn" style="font-size:11px;padding:3px 9px;min-height:0" onclick="curMonth=new Date().toISOString().slice(0,7);sv2('mpick',curMonth);updMLabel();renderActive()">今月</button>
+  </div>`;
+  const ms=mSales(curMonth),msh=mShips(curMonth).filter(s=>(s.status==='closed'||!s.status)&&!s.isInitial);
+  const rev=ms.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+  const fees=ms.reduce((s,x)=>s+x.mercFee*x.qty,0);
+  const msps=ms.reduce((s,x)=>s+x.mship*x.qty,0);
+  const cogs=ms.reduce((s,x)=>s+x.costPer*x.qty,0);
+  const mDefects=defectLog.filter(d=>d.date.startsWith(curMonth));
+  const mDefLoss=calcDefLoss(mDefects);
+  const mFixed=fixedCosts.reduce((s,f)=>s+f.amount,0);
+  const profit=rev-fees-msps-cogs-mDefLoss-mFixed;
+  const margin=rev>0?((profit/rev)*100).toFixed(1):0;
+  const buy=msh.reduce((s,sh)=>s+sh.totalCostJpy,0);
+  const sq=ms.reduce((s,x)=>s+x.qty,0);
+  const byP={};ms.forEach(s=>{if(!byP[s.pid])byP[s.pid]={n:s.name,q:0,p:0};byP[s.pid].q+=s.qty;byP[s.pid].p+=(s.sellPrice-s.mercFee-s.mship-s.costPer)*s.qty});
+  const top=Object.values(byP).sort((a,b)=>b.p-a.p).slice(0,5);
+  const alts=products.map(p=>({...p,stock:getStock(p.id)})).filter(p=>p.stock<=p.alert&&!p.hidden).sort((a,b)=>a.stock-b.stock).slice(0,6);
+  pg.innerHTML=dnav+`<div class="mets">
+    <div class="met"><div class="ml">${parseInt(dm)}月売上</div><div class="mv g">${fy(rev)}</div></div>
+    <div class="met"><div class="ml">${parseInt(dm)}月利益</div><div class="mv ${profit>=0?'g':'r'}">${fy(profit)}</div></div>
+    <div class="met"><div class="ml">利益率</div><div class="mv ${profit>=0?'g':'r'}">${margin}%</div></div>
+    <div class="met"><div class="ml">${parseInt(dm)}月仕入れ</div><div class="mv b">${fy(buy)}</div></div>
+    <div class="met"><div class="ml">${parseInt(dm)}月販売数</div><div class="mv">${sq}点</div></div>
+    <div class="met"><div class="ml">手数料合計</div><div class="mv r">${fy(fees)}</div></div>
+    ${mDefLoss>0?`<div class="met"><div class="ml">不良品損失</div><div class="mv r" style="font-size:13px" title="原価＋送料の合計">⚠ ${fy(mDefLoss)}</div></div>`:''}
+    ${mFixed>0?`<div class="met"><div class="ml">固定費合計</div><div class="mv r">${fy(mFixed)}</div></div>`:''}
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div class="ct" style="margin-bottom:0">🗂 固定費（月額）</div>
+      <button class="btn suc" style="font-size:11px;padding:4px 10px;min-height:0" onclick="openAddFixed()">＋ 追加</button>
+    </div>
+    ${fixedCosts.length===0?'<div style="font-size:13px;color:var(--text3)">固定費なし</div>':
+      `<div style="display:flex;flex-direction:column;gap:6px">
+        ${fixedCosts.map(f=>`<div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:5px 8px;background:var(--bg2);border-radius:var(--rs)">
+          <span>${f.name}</span>
+          <span style="display:flex;align-items:center;gap:10px">
+            <strong style="color:var(--rd)">${fy(f.amount)}</strong>
+            <button onclick="delFixed(${f.id})" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:0">✕</button>
+          </span>
+        </div>`).join('')}
+        <div style="text-align:right;font-size:13px;font-weight:700;color:var(--rd);margin-top:2px">合計 ${fy(fixedCosts.reduce((s,f)=>s+f.amount,0))}/月</div>
+      </div>`
+    }
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div><div class="sh">${parseInt(dm)}月の利益トップ商品</div>
+      <div class="tw"><table><thead><tr><th>商品名</th><th>数量</th><th>利益</th></tr></thead><tbody>
+        ${top.length?top.map(p=>`<tr><td style="font-weight:600">${p.n}</td><td>${p.q}点</td><td class="${p.p>=0?'pp':'pn'}">${fy(p.p)}</td></tr>`).join(''):'<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:16px">売上なし</td></tr>'}
+      </tbody></table></div></div>
+    <div><div class="sh">在庫アラート</div>
+      <div class="tw"><table><thead><tr><th>商品名</th><th>在庫</th></tr></thead><tbody>
+        ${alts.length?alts.map(p=>`<tr><td style="font-weight:600">${p.name}</td><td>${p.stock<=0?'<span class="bdg no">切れ</span>':'<span class="bdg lw">残'+p.stock+'</span>'}</td><td>${p.stock<=0?`<button class="btn" style="font-size:10px;padding:2px 6px;min-height:0;color:var(--text3);border-color:var(--border)" onclick="hideProd(${p.id})">消す</button>`:''}</td></tr>`).join(''):'<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:16px">アラートなし ✓</td></tr>'}
+      </tbody></table></div></div>
+  </div>`;
+}
+
+// ====================================================
+// INVENTORY
+// ====================================================
+let _invQ='', _invFilter='all', _invSort='name';
+
+function renderInventory(){
+  const pg=g('pg-inventory');if(!pg)return;
+  if(!products.length){pg.innerHTML='<div class="empty">📦 商品マスタが空です。<br>「商品登録」から追加してください。</div>';return}
+
+  const allProds=products.map(p=>({...p,stock:getStock(p.id),costPer:getLatestCost(p.id)}));
+  const ts=allProds.reduce((s,p)=>s+Math.max(p.stock,0),0);
+  const tv=allProds.reduce((s,p)=>s+p.costPer*Math.max(p.stock,0),0);
+  const out=allProds.filter(p=>p.stock<=0&&!p.hidden).length;
+  const low=allProds.filter(p=>p.stock>0&&p.stock<=p.alert&&!p.hidden).length;
+  const totalDefLoss=calcDefLoss(defectLog);
+  // 累計損益 = 売上（手数料・送料引き） - 全仕入れ額 - 不良品損失
+  const netReceipts=salesLog.filter(sl=>!sl.isInitial).reduce((s,sl)=>s+(sl.sellPrice-sl.mercFee-sl.mship)*sl.qty,0);
+  const allPurchase=shipments.filter(sh=>(sh.status==='closed'||!sh.status)&&!sh.isInitial).reduce((s,sh)=>s+sh.totalCostJpy,0);
+  const totalPnL=netReceipts-allPurchase-totalDefLoss;
+
+  // カテゴリ一覧
+  const cats=['all',...new Set(products.map(p=>p.cat))];
+
+  pg.innerHTML=`
+  <div class="mets">
+    <div class="met"><div class="ml">商品種類</div><div class="mv">${products.length}種</div></div>
+    <div class="met"><div class="ml">総在庫数</div><div class="mv">${ts}点</div></div>
+    <div class="met"><div class="ml">在庫評価額</div><div class="mv b" style="font-size:15px">${fy(tv)}</div></div>
+    <div class="met" style="cursor:pointer" onclick="setStockFilter('out')" title="クリックで絞り込み"><div class="ml">在庫切れ</div><div class="mv r">${out}種</div></div>
+    <div class="met" style="cursor:pointer" onclick="setStockFilter('low')" title="クリックで絞り込み"><div class="ml">低在庫</div><div class="mv a">${low}種</div></div>
+    ${salesLog.length>0?`<div class="met"><div class="ml">累計損益（全商品）</div><div class="mv ${totalPnL>=0?'g':'r'}" style="font-size:15px;font-weight:700" title="売上(手数料・送料引き) - 全仕入れ額 - 不良品損失">${fy(totalPnL)}</div></div>`:''}
+    ${totalDefLoss>0?`<div class="met"><div class="ml">うち不良品損失</div><div class="mv r" style="font-size:13px">⚠ ${fy(totalDefLoss)}</div></div>`:''}
+  </div>
+
+  <!-- 検索・フィルターバー -->
+  <div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <div style="position:relative;flex:1;min-width:160px">
+      <span style="position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:14px;pointer-events:none">🔍</span>
+      <input type="text" id="inv-q" placeholder="商品名で検索…" value="${_invQ}"
+        style="padding:8px 10px 8px 30px;width:100%"
+        oninput="_invQ=this.value;renderInvRows()">
+    </div>
+    <select id="inv-cat" style="min-width:120px;max-width:160px" onchange="_invFilter=this.value;renderInvRows()">
+      ${cats.map(c=>`<option value="${c}"${c===_invFilter?'selected':''}>${c==='all'?'すべてのカテゴリ':c}</option>`).join('')}
+    </select>
+    <select id="inv-stock-f" style="min-width:100px" onchange="_invFilter2=this.value;renderInvRows()">
+      <option value="all">在庫: すべて</option>
+      <option value="ok">在庫あり</option>
+      <option value="low">低在庫</option>
+      <option value="out">切れ</option>
+    </select>
+    <select id="inv-sort" style="min-width:110px" onchange="_invSort=this.value;renderInvRows()">
+      <option value="name"${_invSort==='name'?'selected':''}>名前順</option>
+      <option value="stock"${_invSort==='stock'?'selected':''}>在庫数順</option>
+      <option value="profit"${_invSort==='profit'?'selected':''}>利益順</option>
+      <option value="margin"${_invSort==='margin'?'selected':''}>利益率順</option>
+      <option value="sell"${_invSort==='sell'?'selected':''}>販売価格順</option>
+    </select>
+    <label style="font-size:12px;color:var(--text3);white-space:nowrap;display:flex;align-items:center;gap:4px;cursor:pointer"><input type="checkbox" id="inv-show-hidden" onchange="renderInvRows()">非表示を含む</label>
+    <span id="inv-count" style="font-size:12px;color:var(--text3);white-space:nowrap"></span>
+    <button class="btn suc" style="font-size:12px;padding:5px 10px;min-height:0;white-space:nowrap" onclick="openBundleSell()">🛍 まとめ売り</button>
+    <button class="btn" style="font-size:12px;padding:5px 10px;min-height:0;white-space:nowrap" onclick="openInit()">📦 初期データ入力</button>
+  </div>
+
+  <div class="tw"><table>
+    <thead><tr>
+      <th>商品名</th>
+      <th style="cursor:pointer" onclick="_invSort='stock';g('inv-sort').value='stock';renderInvRows()">在庫 ↕</th>
+      <th>原価/個</th>
+      <th>販売価格</th>
+      <th style="cursor:pointer" onclick="_invSort='profit';g('inv-sort').value='profit';renderInvRows()">利益/率 ↕</th>
+      <th>推奨発注</th>
+      <th>操作</th>
+    </tr></thead>
+    <tbody id="inv-tbody"></tbody>
+  </table></div>`;
+
+  renderInvRows();
+}
+
+let _invFilter2='all';
+function setStockFilter(val){
+  _invFilter2=val;
+  const sel=g('inv-stock-f');if(sel)sel.value=val;
+  switchTab('inventory');
+  renderInvRows();
+}
+function renderInvRows(){
+  const tbody=g('inv-tbody');if(!tbody)return;
+  const q=(_invQ||'').trim().toLowerCase();
+  const showHidden=g('inv-show-hidden')?.checked||false;
+  let prods=products.map(p=>({...p,stock:getStock(p.id),costPer:getLatestCost(p.id)}));
+  if(!showHidden) prods=prods.filter(p=>!p.hidden);
+
+  // テキスト検索（よみ・ローマ字・カタカナ↔ひらがな対応）
+  if(q){
+    const qH=romaToHira(q);           // ローマ字→ひらがな変換
+    const qN=kataToHira(q);           // クエリをひらがな正規化
+    const qHN=kataToHira(qH);         // 変換後もひらがな正規化
+    prods=prods.filter(p=>{
+      const n=kataToHira(p.name.toLowerCase()),
+            c=kataToHira(p.cat.toLowerCase()),
+            m=kataToHira((p.memo||'').toLowerCase()),
+            y=kataToHira((p.yomi||'').toLowerCase());
+      return n.includes(qN)||c.includes(qN)||m.includes(qN)||y.includes(qN)||
+             (qH!==q&&(n.includes(qHN)||y.includes(qHN)));
+    });
+  }
+  // カテゴリフィルター
+  if(_invFilter&&_invFilter!=='all') prods=prods.filter(p=>p.cat===_invFilter);
+  // 在庫状態フィルター
+  const sf=g('inv-stock-f')?.value||'all';
+  if(sf==='ok') prods=prods.filter(p=>p.stock>p.alert);
+  else if(sf==='low') prods=prods.filter(p=>p.stock>0&&p.stock<=p.alert);
+  else if(sf==='out') prods=prods.filter(p=>p.stock<=0);
+
+  // ソート
+  const sort=g('inv-sort')?.value||_invSort;
+  prods.sort((a,b)=>{
+    if(sort==='stock') return b.stock-a.stock;
+    if(sort==='profit'){
+      const pa=a.sellPrice-Math.round(a.sellPrice*(a.feeRate||10)/100)-a.mship-a.costPer;
+      const pb=b.sellPrice-Math.round(b.sellPrice*(b.feeRate||10)/100)-b.mship-b.costPer;
+      return pb-pa;
+    }
+    if(sort==='margin'){
+      const ma=a.sellPrice>0?(a.sellPrice-Math.round(a.sellPrice*(a.feeRate||10)/100)-a.mship-a.costPer)/a.sellPrice:0;
+      const mb=b.sellPrice>0?(b.sellPrice-Math.round(b.sellPrice*(b.feeRate||10)/100)-b.mship-b.costPer)/b.sellPrice:0;
+      return mb-ma;
+    }
+    if(sort==='sell') return b.sellPrice-a.sellPrice;
+    return a.name.localeCompare(b.name,'ja');
+  });
+
+  // 件数表示
+  const cnt=g('inv-count');
+  if(cnt) cnt.textContent=prods.length===products.length?`${products.length}件`:`${prods.length} / ${products.length}件`;
+
+  if(!prods.length){
+    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:24px">条件に一致する商品がありません</td></tr>';
+    return;
+  }
+
+  // ハイライト用
+  const hl=(txt)=>{
+    if(!q) return txt;
+    const re=new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi');
+    return txt.replace(re,'<mark style="background:rgba(255,200,0,.35);border-radius:2px">$1</mark>');
+  };
+
+  tbody.innerHTML=prods.map(p=>{
+    const fr=(10)/100,fee=Math.round(p.sellPrice*fr);
+    const pr=p.sellPrice-fee-p.mship-p.costPer;
+    const mg=p.sellPrice>0?((pr/p.sellPrice)*100).toFixed(1):'-';
+    const sb=p.stock<=0?`<span class="bdg no" style="cursor:pointer" title="クリックで非表示" onclick="hideProd(${p.id})">切れ ✕</span>`:p.stock<=p.alert?`<span class="bdg lw">残${p.stock}</span>`:`<span class="bdg ok">${p.stock}点</span>`;
+    const pmm={};salesLog.filter(s=>s.pid===p.id&&!s.isInitial).forEach(s=>{const ym=s.date.slice(0,7);pmm[ym]=(pmm[ym]||0)+s.qty});
+    const pmv=Object.values(pmm);const pavg=pmv.length>0?pmv.reduce((s,v)=>s+v,0)/pmv.length:0;
+    const prec=pavg>0?Math.ceil(pavg*2):null;
+    return `<tr>
+      <td>
+        <div style="color:var(--bl);font-weight:600;cursor:pointer" onclick="openProdModal(${p.id})">${hl(p.name)}</div>
+        <span class="tag">${hl(p.cat)}</span>
+      </td>
+      <td>${sb}</td>
+      <td>${p.costPer>0?fy(p.costPer):'<span style="color:var(--text3)">未仕入</span>'}</td>
+      <td><input type="number" value="${p.sellPrice}" min="1" style="width:80px;font-size:13px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;text-align:right" onchange="saveProdSellPrice(${p.id},this.value)"></td>
+      <td class="${pr>=0?'pp':'pn'}">${fy(pr)}<br><span style="font-size:10px;font-weight:400;color:var(--text2)">${mg}% / ${10}%手数料</span></td>
+      <td>${prec?`<span style="font-weight:700;color:var(--bl)">${prec}個</span><br><span style="font-size:10px;color:var(--text3)">月平均${pavg.toFixed(1)}個</span>`:'<span style="color:var(--text3);font-size:12px">-</span>'}</td>
+      <td><div style="display:flex;gap:5px;flex-wrap:wrap">
+        <button class="btn suc" style="font-size:12px;padding:6px 10px" onclick="openSell(${p.id})">✓ 売れた</button>
+        <button class="btn inf" style="font-size:12px;padding:6px 10px" onclick="openRestock(${p.id})">＋ 補充</button>
+        <button class="btn" style="font-size:12px;padding:6px 10px;background:var(--ambg);color:var(--am);border-color:var(--am)" onclick="openDefect(${p.id})">⚠ 不良品</button>
+        ${p.stock<=0&&!p.hidden?`<button class="btn" style="font-size:12px;padding:6px 10px;color:var(--text3);border-color:var(--border)" onclick="hideProd(${p.id})">非表示</button>`:''}
+        ${p.hidden?`<button class="btn" style="font-size:12px;padding:6px 10px" onclick="showProd(${p.id})">再表示</button>`:''}
+        <button class="btn dan" style="font-size:12px;padding:6px 10px" onclick="delProd(${p.id})">削除</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ====================================================
+// SELL MODAL
+// ====================================================
+function openSell(pid){
+  _spid=pid;const p=products.find(x=>x.id===pid);if(!p)return;
+  const stock=getStock(pid);
+  if(g('sell-pname'))g('sell-pname').textContent=p.name;
+  sv2('sell-date',new Date().toISOString().slice(0,10));
+  sv2('sell-qty','1');
+  setPlatform('mercari');
+  _setMode=false;
+  if(g('set-toggle'))g('set-toggle').classList.remove('sel');
+  if(g('set-fields'))g('set-fields').style.display='none';
+  if(g('set-toggle-hint'))g('set-toggle-hint').textContent='';
+  if(g('set-calc-hint'))g('set-calc-hint').textContent='';
+  if(g('sell-setprice'))g('sell-setprice').value='';
+  if(g('sell-setqty'))g('sell-setqty').value='2';
+  if(g('sell-setship'))g('sell-setship').value='';
+  if(g('sell-qty')){g('sell-qty').value='1';g('sell-qty').readOnly=false;}
+  if(g('qty-normal-area'))g('qty-normal-area').style.display='';
+  if(g('sell-hint'))g('sell-hint').textContent='在庫: '+stock+'点';
+  if(g('sell-price'))g('sell-price').value=p.sellPrice;
+  if(g('sell-msg'))g('sell-msg').innerHTML='';
+  openOv('ov-sell');
+  setTimeout(()=>g('sell-qty')?.focus(),80);
+}
+function confirmSell(){
+  const p=products.find(x=>x.id===_spid);if(!p)return;
+  const stock=getStock(_spid);
+  const date=gv('sell-date'),qty=parseInt(gv('sell-qty'))||0;
+  const fr=(parseFloat(gv('sell-fee'))||10)/100;
+  if(!date){showMsg('sell-msg','日付を入力してください','err');return}
+  if(_setMode){
+    const setPrice=parseInt(gv('sell-setprice'))||0;
+    const setQty=parseInt(gv('sell-setqty'))||2;
+    if(!setPrice){showMsg('sell-msg','セット価格を入力してください','err');return}
+    if(setQty<2){showMsg('sell-msg','セット点数は2以上にしてください','err');return}
+    if(stock<setQty){showMsg('sell-msg',`在庫(${stock}点)が不足しています`,'err');return}
+    const costPer=getFifoCost(_spid,setQty);
+    const sellPricePer=Math.round(setPrice/setQty);
+    const mercFee=Math.round(setPrice*fr/setQty);
+    const shipInput=parseInt(gv('sell-setship'));
+    const actualShip=isNaN(shipInput)||gv('sell-setship')===''?p.mship:shipInput;
+    const mshipPer=Math.round(actualShip/setQty);
+    salesLog.push({pid:_spid,name:p.name,cat:p.cat,sellPrice:sellPricePer,mship:mshipPer,mercFee,feeRate:fr*100,platform:_sellPlatform,costPer,qty:setQty,date,ts:Date.now(),isSet:true,setPrice,setQty});
+    sv();closeOv('ov-sell');renderActive();toast(`✓ ${p.name} ${setQty}点セット(${fy(setPrice)}) を記録`);
+  } else {
+    if(qty<=0){showMsg('sell-msg','数量を入力してください','err');return}
+    if(qty>stock){showMsg('sell-msg',`在庫(${stock}点)を超えています`,'err');return}
+    const costPer=getFifoCost(_spid,qty);
+    const actualSellPrice=parseInt(gv('sell-price'))||p.sellPrice;
+    const mercFee=Math.round(actualSellPrice*fr);
+    salesLog.push({pid:_spid,name:p.name,cat:p.cat,sellPrice:actualSellPrice,mship:p.mship,mercFee,feeRate:fr*100,platform:_sellPlatform,costPer,qty,date,ts:Date.now()});
+    sv();closeOv('ov-sell');renderActive();toast(`✓ ${p.name} ×${qty}個 を記録`);
+  }
+}
+
+// ====================================================
+// BUNDLE SELL MODAL
+// ====================================================
+let _bndRows=[];
+function openBundleSell(){
+  _bndRows=[{pid:'',qty:1},{pid:'',qty:1}];
+  sv2('bnd-date',new Date().toISOString().slice(0,10));
+  sv2('bnd-price','');sv2('bnd-ship','');sv2('bnd-fee','10');sv2('bnd-platform','mercari');
+  g('bnd-plt-merc')?.classList.add('sel');g('bnd-plt-furima')?.classList.remove('sel');
+  bndBuildRows();bndCalc();
+  if(g('bnd-msg'))g('bnd-msg').innerHTML='';
+  if(g('bnd-prev'))g('bnd-prev').style.display='none';
+  openOv('ov-bundle');
+}
+function setBndPlatform(p){
+  const rates={mercari:10,furima:5};
+  sv2('bnd-fee',rates[p]||10);sv2('bnd-platform',p);
+  g('bnd-plt-merc')?.classList.toggle('sel',p==='mercari');
+  g('bnd-plt-furima')?.classList.toggle('sel',p==='furima');
+  bndCalc();
+}
+function bndBuildRows(){
+  const el=g('bnd-rows');if(!el)return;
+  el.innerHTML=_bndRows.map((row,i)=>`<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">
+      <div style="flex:1">${prodSearchHtml('bnd-q-'+i,'bnd-pid-'+i,'商品名で検索…')}</div>
+      <input type="number" value="${row.qty}" min="1" style="width:58px;padding:7px 6px;font-size:13px;border:0.5px solid var(--border2);border-radius:var(--rs);background:var(--bg);color:var(--text);text-align:center"
+        oninput="_bndRows[${i}].qty=Math.max(1,parseInt(this.value)||1);bndCalc()">
+      <span style="font-size:12px;color:var(--text3)">個</span>
+      ${_bndRows.length>1?`<button class="btn dan" style="font-size:11px;padding:3px 7px;min-height:0" onclick="bndRemoveRow(${i})">✕</button>`:''}
+    </div>`).join('');
+  _bndRows.forEach((row,i)=>{
+    if(!row.pid)return;
+    const p=products.find(x=>x.id===parseInt(row.pid));
+    if(!p)return;
+    const qi=g('bnd-q-'+i);if(qi)qi.value=p.name;
+    const hi=g('bnd-pid-'+i);if(hi)hi.value=p.id;
+  });
+}
+function bndAddRow(){_bndRows.push({pid:'',qty:1});bndBuildRows();}
+function bndRemoveRow(i){_bndRows.splice(i,1);bndBuildRows();bndCalc();}
+function bndCalc(){
+  const totalPrice=parseInt(gv('bnd-price'))||0,totalShip=parseInt(gv('bnd-ship'))||0;
+  const fr=(parseFloat(gv('bnd-fee'))||10)/100;
+  const prev=g('bnd-prev');if(!prev)return;
+  const valid=_bndRows.filter(r=>r.pid&&r.qty>0);
+  if(!valid.length||!totalPrice){prev.style.display='none';return;}
+  const ws=valid.map(r=>({...r,cost:getFifoCost(r.pid,r.qty),w:getFifoCost(r.pid,r.qty)*r.qty}));
+  const tw=ws.reduce((s,w)=>s+w.w,0);
+  const rows=ws.map(w=>{
+    const p=products.find(x=>x.id===w.pid);
+    const share=tw>0?w.w/tw:1/ws.length;
+    const sellPer=Math.round(totalPrice*share/w.qty);
+    const feePer=Math.round(totalPrice*fr*share/w.qty);
+    const shipPer=Math.round(totalShip*share/w.qty);
+    const profit=(sellPer-feePer-shipPer-w.cost)*w.qty;
+    return`<div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:0.5px solid var(--border);gap:8px">
+      <span style="font-size:12px">${p?.name||'?'} ×${w.qty}</span>
+      <span style="font-size:12px;color:var(--text2)">売 ${fy(sellPer)}/個　利益 <span class="${profit>=0?'pp':'pn'}">${fy(profit)}</span></span>
+    </div>`;
+  }).join('');
+  const tc=ws.reduce((s,w)=>s+w.cost*w.qty,0);
+  const tp=totalPrice-Math.round(totalPrice*fr)-totalShip-tc;
+  prev.style.display='block';
+  prev.innerHTML=rows+`<div style="display:flex;justify-content:space-between;padding:6px 0 2px;font-weight:700"><span>まとめ利益</span><span class="${tp>=0?'pp':'pn'}">${fy(tp)}</span></div>`;
+}
+function confirmBundleSell(){
+  const date=gv('bnd-date'),totalPrice=parseInt(gv('bnd-price'))||0;
+  const totalShip=parseInt(gv('bnd-ship'))||0,fr=(parseFloat(gv('bnd-fee'))||10)/100;
+  const platform=gv('bnd-platform')||'mercari';
+  if(!date){showMsg('bnd-msg','日付を入力してください','err');return}
+  if(!totalPrice){showMsg('bnd-msg','合計売上を入力してください','err');return}
+  const valid=_bndRows.filter(r=>r.pid&&r.qty>0);
+  if(valid.length<2){showMsg('bnd-msg','商品を2種類以上選択してください','err');return}
+  if(new Set(valid.map(r=>r.pid)).size!==valid.length){showMsg('bnd-msg','同じ商品が重複しています','err');return}
+  for(const r of valid){
+    const stock=getStock(r.pid);
+    if(r.qty>stock){const p=products.find(x=>x.id===r.pid);showMsg('bnd-msg',`${p?.name}の在庫(${stock}点)が不足しています`,'err');return}
+  }
+  const ws=valid.map(r=>({...r,cost:getFifoCost(r.pid,r.qty),w:getFifoCost(r.pid,r.qty)*r.qty}));
+  const tw=ws.reduce((s,w)=>s+w.w,0);
+  const ts=Date.now();
+  ws.forEach((w,i)=>{
+    const p=products.find(x=>x.id===w.pid);
+    const share=tw>0?w.w/tw:1/ws.length;
+    const sellPer=Math.round(totalPrice*share/w.qty);
+    const feePer=Math.round(totalPrice*fr*share/w.qty);
+    const shipPer=Math.round(totalShip*share/w.qty);
+    salesLog.push({pid:w.pid,name:p.name,cat:p.cat,sellPrice:sellPer,mship:shipPer,mercFee:feePer,feeRate:fr*100,platform,costPer:w.cost,qty:w.qty,date,ts:ts+i,isBundle:true,bundleTotal:totalPrice});
+  });
+  sv();closeOv('ov-bundle');renderActive();
+  toast(`✓ まとめ売り ${valid.length}種類 ${fy(totalPrice)} を記録`);
+}
+
+// ====================================================
+// RESTOCK MODAL
+// ====================================================
+function openRestock(pid){
+  _rpid=pid;const p=products.find(x=>x.id===pid);if(!p)return;
+  if(p.memo&&/^https?:\/\//.test(p.memo.trim())){window.open(p.memo.trim(),'_blank');return;}
+  const stock=getStock(pid),prev=getLatestCost(pid);
+  if(g('rs-pname'))g('rs-pname').textContent=p.name;
+  if(g('rs-stock'))g('rs-stock').textContent=`現在庫: ${stock}点　前回原価: ${prev>0?fy(prev):'未設定'}`;
+  sv2('rs-date',new Date().toISOString().slice(0,10));
+  sv2('rs-qty','1');sv2('rs-cny','');sv2('rs-dom','0');sv2('rs-intl','0');sv2('rs-tariff','0');sv2('rs-iq','1');sv2('rs-memo','');
+  if(_rate)sv2('rs-rate',_rate);
+  if(g('rs-prev'))g('rs-prev').style.display='none';
+  if(g('rs-msg'))g('rs-msg').innerHTML='';
+  openOv('ov-restock');
+}
+function rsCalc(){
+  const rate=parseFloat(gv('rs-rate'))||21,cny=parseFloat(gv('rs-cny'))||0;
+  const dom=parseFloat(gv('rs-dom'))||0,intl=parseFloat(gv('rs-intl'))||0;
+  const tariff=parseFloat(gv('rs-tariff'))||0,iq=parseFloat(gv('rs-iq'))||1;
+  const box=g('rs-prev');if(!box)return;
+  if(!cny&&!intl&&!tariff){box.style.display='none';return}
+  const intlJpy=Math.round(intl*rate);
+  const cj=Math.round(cny*rate),dj=Math.round(dom*rate),ij=Math.round(intlJpy/iq),tj=Math.round(tariff/iq),tot=cj+dj+ij+tj;
+  box.style.display='block';
+  box.innerHTML=`<div class="rr"><span class="rl">仕入値（元→円）</span><span>${fy(cj)}</span></div>
+    <div class="rr"><span class="rl">国内送料</span><span>${fy(dj)}</span></div>
+    <div class="rr"><span class="rl">国際送料（元${intl}×${rate}÷${iq}個）</span><span>${fy(ij)}</span></div>
+    ${tariff>0?`<div class="rr"><span class="rl">関税按分（${fy(tariff)}÷${iq}個）</span><span>${fy(tj)}</span></div>`:''}
+    <div class="rr tot"><span>原価/個</span><span style="color:var(--bl)">${fy(tot)}</span></div>`;
+}
+function confirmRestock(){
+  const p=products.find(x=>x.id===_rpid);if(!p)return;
+  const date=gv('rs-date'),idate=date;
+  const qty=parseInt(gv('rs-qty'))||0,rate=parseFloat(gv('rs-rate'))||21;
+  const cny=parseFloat(gv('rs-cny'))||0,dom=parseFloat(gv('rs-dom'))||0;
+  const intl=parseFloat(gv('rs-intl'))||0,tariff=parseFloat(gv('rs-tariff'))||0,iq=parseFloat(gv('rs-iq'))||1;
+  const memo=gv('rs-memo').trim();
+  if(!date){showMsg('rs-msg','仕入れ日を入力してください','err');return}
+  if(qty<=0){showMsg('rs-msg','数量を入力してください','err');return}
+  if(!cny&&!intl){showMsg('rs-msg','仕入値か輸送費を入力してください','err');return}
+  const intlJpy=Math.round(intl*rate);
+  const ip=iq>0?intlJpy/iq:0,tp=iq>0?tariff/iq:0;
+  const cj=Math.round(cny*rate),dj=Math.round(dom*rate),ij=Math.round(ip),tj=Math.round(tp),tot=cj+dj+ij+tj;
+  const _today=new Date().toISOString().slice(0,10);
+  shipments.push({id:Date.now(),date,importDate:idate,memo:memo||p.name+'補充',rate,domCny:dom,intlCny:intl,intlJpy,tariffJpy:tariff,totalQty:qty,intlPer:ip,tariffPer:tp,
+    items:[{pid:_rpid,name:p.name,qty,cnyPer:cny,cnyJpy:cj,domJpy:dj,intlJpy:ij,tariffJpy:tj,totalCostPer:tot}],
+    totalCostJpy:tot*qty,month:date.slice(0,7),status:'closed',isRestock:true,...(date>_today?{rateProvisional:true}:{})});
+  sv();closeOv('ov-restock');renderActive();toast(`✓ ${p.name} を${qty}点補充`);
+}
+
+// ====================================================
+// DEFECT MODAL
+// ====================================================
+let _dfTiming='before';
+function setDefTiming(t){
+  _dfTiming=t;
+  g('df-tab-before').classList.toggle('on',t==='before');
+  g('df-tab-after').classList.toggle('on',t==='after');
+  g('df-ship-sec').style.display=t==='after'?'block':'none';
+  const sel=g('df-reason');if(!sel)return;
+  sel.innerHTML=t==='before'
+    ?'<option>破損</option><option>初期不良</option><option>紛失</option><option>その他</option>'
+    :'<option>クレーム</option><option>返品</option><option>破損発覚</option><option>その他</option>';
+}
+function buildDfSP(){
+  const w=g('df-spw');if(!w)return;
+  let h='';SPRESET.forEach(x=>{
+    if(x.g)h+=`<span class="spg">${x.g}</span>`;
+    else h+=`<button type="button" class="spbtn" data-p="${x.p}" onclick="selDfSP(${x.p})">${x.l}<br><strong>¥${x.p}</strong></button>`;
+  });w.innerHTML=h;
+}
+function selDfSP(p){sv2('df-ship',p);document.querySelectorAll('#df-spw .spbtn').forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.p)===p))}
+function openDefect(pid){
+  _dpid=pid;const p=products.find(x=>x.id===pid);if(!p)return;
+  const stock=getStock(pid);
+  if(g('df-pname'))g('df-pname').textContent=p.name;
+  if(g('df-stock'))g('df-stock').textContent=`現在庫: ${stock}点`;
+  sv2('df-date',new Date().toISOString().slice(0,10));
+  sv2('df-qty','1');sv2('df-memo','');sv2('df-ship',p.mship||0);
+  setDefTiming('before');
+  buildDfSP();
+  // 登録送料に一致するボタンを選択状態にする
+  if(p.mship)setTimeout(()=>selDfSP(p.mship),0);
+  if(g('df-msg'))g('df-msg').innerHTML='';
+  openOv('ov-defect');
+  setTimeout(()=>g('df-qty')?.focus(),80);
+}
+function confirmDefect(){
+  const p=products.find(x=>x.id===_dpid);if(!p)return;
+  const stock=getStock(_dpid);
+  const date=gv('df-date'),qty=parseInt(gv('df-qty'))||0;
+  const reason=gv('df-reason'),memo=gv('df-memo').trim();
+  const timing=_dfTiming,shipping=timing==='after'?(parseFloat(gv('df-ship'))||0):0;
+  if(!date){showMsg('df-msg','日付を入力してください','err');return}
+  if(qty<=0){showMsg('df-msg','数量を入力してください','err');return}
+  if(qty>stock){showMsg('df-msg',`在庫(${stock}点)を超えています`,'err');return}
+  defectLog.push({pid:_dpid,name:p.name,cat:p.cat,qty,date,reason,memo,timing,shipping,ts:Date.now()});
+  sv();closeOv('ov-defect');renderActive();
+  toast(`⚠ ${p.name} ×${qty}個 不良品(${timing==='after'?'返品':'販売前'})を記録`);
+}
+function delDefect(ts){if(confirm('この不良品記録を取り消しますか？')){defectLog=defectLog.filter(d=>d.ts!==ts);sv();renderActive()}}
+
+// ====================================================
+// PRODUCT DETAIL MODAL
+// ====================================================
+function openProdModal(pid){
+  const p=products.find(x=>x.id===pid);if(!p)return;
+  const ps=shipments.filter(sh=>sh.items.some(it=>it.pid===pid)&&(sh.status==='closed'||!sh.status)).sort((a,b)=>b.date.localeCompare(a.date));
+  const psl=salesLog.filter(s=>s.pid===pid).sort((a,b)=>b.date.localeCompare(a.date));
+  const tb=ps.reduce((s,sh)=>s+sh.items.filter(it=>it.pid===pid).reduce((ss,it)=>ss+it.qty,0),0);
+  const ts=psl.reduce((s,sl)=>s+sl.qty,0),stock=tb-ts;
+  const lc=getLatestCost(pid),fr=(10)/100;
+  const profit=p.sellPrice-Math.round(p.sellPrice*fr)-p.mship-lc;
+  // 累計実績
+  const totalRev=psl.reduce((s,sl)=>s+sl.sellPrice*sl.qty,0);
+  const totalProfit=psl.reduce((s,sl)=>s+(sl.sellPrice-sl.mercFee-sl.mship-sl.costPer)*sl.qty,0);
+  const costHistRows=[...ps].reverse().map(sh=>{const it=sh.items.find(x=>x.pid===pid);return`<tr><td>${sh.date}</td><td style="font-weight:700;color:var(--bl)">${fy(it.totalCostPer)}</td><td style="color:var(--text3);font-size:12px">${it.qty}個</td></tr>`}).join('');
+  const marginHistRows=[...psl].reverse().map(s=>{const pr=s.sellPrice-s.mercFee-s.mship-s.costPer;const mg=s.sellPrice>0?((pr/s.sellPrice)*100).toFixed(1):0;return`<tr><td>${s.date}</td><td>${s.qty}点</td><td>${fy(s.sellPrice)}</td><td class="${pr>=0?'pp':'pn'}" style="font-weight:700">${mg}%</td></tr>`}).join('');
+  const monthMap={};psl.filter(s=>!s.isInitial).forEach(s=>{const ym=s.date.slice(0,7);monthMap[ym]=(monthMap[ym]||0)+s.qty});
+  const monthVals=Object.values(monthMap);
+  const avgMonthly=monthVals.length>0?monthVals.reduce((s,v)=>s+v,0)/monthVals.length:0;
+  const recOrder=Math.ceil(avgMonthly*2);
+  const monthRows=Object.entries(monthMap).sort((a,b)=>a[0].localeCompare(b[0])).map(([ym,qty])=>`<tr><td>${ym}</td><td>${qty}点</td></tr>`).join('');
+  const prodNetReceipts=psl.reduce((s,sl)=>s+(sl.sellPrice-sl.mercFee-sl.mship)*sl.qty,0);
+  const prodAllPurchase=ps.reduce((s,sh)=>{const it=sh.items.find(x=>x.pid===pid);return s+(it?it.totalCostPer*it.qty:0)},0);
+  const _fifoRem={};
+  {
+    const byDate=[...ps].sort((a,b)=>a.date.localeCompare(b.date));
+    let cons=salesLog.filter(s=>s.pid===pid).reduce((s,sl)=>s+sl.qty,0)+defectLog.filter(d=>d.pid===pid).reduce((s,d)=>s+d.qty,0);
+    for(const sh of byDate){const it=sh.items.find(x=>x.pid===pid);if(!it)continue;if(cons>=it.qty){cons-=it.qty;_fifoRem[sh.id]=0;}else{_fifoRem[sh.id]=it.qty-cons;cons=0;}}
+  }
+  const sr=ps.length===0?'<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:14px">仕入れ記録なし</td></tr>':
+    ps.map(sh=>{const it=sh.items.find(x=>x.pid===pid);const rem=_fifoRem[sh.id]??0;const remBadge=rem===0?`<span style="color:var(--rd);font-weight:700">0</span>`:`<span style="color:var(--gn);font-weight:700">${rem}個</span>`;return`<tr>
+      <td><div style="font-weight:600">${sh.date}</div>${sh.importDate?`<div style="font-size:11px;color:var(--gn)">📦 ${sh.importDate}</div>`:''}</td>
+      <td>${it.qty}個</td><td>${remBadge}</td><td>${fy(it.cnyJpy)}<span style="color:var(--text3);font-size:10px"> 元${it.cnyPer}</span></td>
+      <td>${fy(it.domJpy)}</td><td>${fy(it.intlJpy)}</td><td style="font-weight:700;color:var(--bl)">${fy(it.totalCostPer)}</td>
+    </tr>`}).join('');
+  const lr=psl.length===0?'<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:14px">売上記録なし</td></tr>':
+    psl.map(s=>{const pr=(s.sellPrice-s.mercFee-s.mship-s.costPer)*s.qty;return`<tr><td>${s.date}</td><td>${s.qty}点</td><td>${fy(s.sellPrice)}</td><td class="${pr>=0?'pp':'pn'}">${fy(pr)}</td></tr>`}).join('');
+  const pdl=defectLog.filter(d=>d.pid===pid).sort((a,b)=>b.date.localeCompare(a.date));
+  const td=pdl.reduce((s,d)=>s+d.qty,0);
+  const pdlLoss=calcDefLoss(pdl);
+  const totalProfitNet=totalProfit-pdlLoss;
+  const totalMargin=totalRev>0?((totalProfitNet/totalRev)*100).toFixed(1):null;
+  const prodPnL=prodNetReceipts-prodAllPurchase-pdlLoss;
+  const dr=pdl.length===0?'<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:14px">不良品記録なし</td></tr>':
+    pdl.map(d=>`<tr>
+      <td>${d.date}</td>
+      <td>${d.qty}点</td>
+      <td><span style="font-size:11px;padding:2px 5px;border-radius:3px;background:${d.timing==='after'?'var(--rdbg)':'var(--ambg)'};color:${d.timing==='after'?'var(--rd)':'var(--am)'}">${d.timing==='after'?'📬返品':'📦販売前'}</span> ${d.reason}</td>
+      <td>${d.timing==='after'&&d.shipping?`<span style="color:var(--rd);font-weight:600">-${fy(d.shipping)}</span>`:'<span style="color:var(--text3)">-</span>'}</td>
+      <td><span style="color:var(--text3);font-size:11px">${d.memo||''}</span><button class="btn dan" style="font-size:10px;padding:2px 6px;min-height:0;margin-left:4px" onclick="delDefect(${d.ts})">取消</button></td>
+    </tr>`).join('');
+  if(g('pm-name'))g('pm-name').textContent=p.name;
+  if(g('pm-body'))g('pm-body').innerHTML=`
+    <div class="mets" style="margin-bottom:12px">
+      <div class="met"><div class="ml">現在庫</div><div class="mv ${stock<=0?'r':stock<=p.alert?'a':''}">${stock}点</div></div>
+      <div class="met"><div class="ml">累計仕入</div><div class="mv">${tb}点</div></div>
+      <div class="met"><div class="ml">累計販売</div><div class="mv g">${ts}点</div></div>
+      ${monthVals.length>0?`<div class="met" style="cursor:pointer" onclick="toggleMonthSales()"><div class="ml">推奨発注数 <span id="month-sales-arr" style="font-size:10px;color:var(--text3)">▼</span></div><div class="mv b" style="font-size:14px;font-weight:700">${recOrder}個</div><div style="font-size:10px;color:var(--text3);margin-top:2px">月平均${avgMonthly.toFixed(1)}個×2ヶ月</div></div>`:''}
+      ${td>0?`<div class="met"><div class="ml">不良品計</div><div class="mv r">${td}点／${tb>0?((td/tb)*100).toFixed(1):0}%</div></div>`:''}
+      ${pdlLoss>0?`<div class="met"><div class="ml">不良品損失</div><div class="mv r" style="font-size:13px" title="原価＋送料">⚠ ${fy(pdlLoss)}</div></div>`:''}
+      <div class="met"><div class="ml" style="font-weight:700">この商品の損益</div><div class="mv ${prodPnL>=0?'g':'r'}" style="font-size:13px;font-weight:700">${fy(prodPnL)}</div></div>
+      <div class="met" style="cursor:pointer" onclick="toggleCostHist()"><div class="ml">最新原価 <span id="cost-hist-arr" style="font-size:10px;color:var(--text3)">▼</span></div><div class="mv b" style="font-size:14px">${lc>0?fy(lc):'未登録'}</div></div>
+      <div class="met"><div class="ml">想定利益/個</div><div class="mv ${profit>=0?'g':'r'}" style="font-size:14px">${fy(profit)}</div></div>
+      ${ts>0?`
+      <div class="met" style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px"><div class="ml">累計利益</div><div class="mv ${totalProfitNet>=0?'g':'r'}" style="font-size:15px;font-weight:700">${fy(totalProfitNet)}</div></div>
+      <div class="met" style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px;cursor:pointer" onclick="toggleMarginHist()"><div class="ml">利益率 <span id="margin-hist-arr" style="font-size:10px;color:var(--text3)">▼</span></div><div class="mv ${totalProfitNet>=0?'g':'r'}" style="font-size:14px">${totalMargin}%</div></div>
+      `:''}
+    </div>
+    <div id="month-sales-panel" style="display:none;margin-bottom:12px">
+      <div class="sh">月別販売数</div>
+      <div class="tw"><table><thead><tr><th>月</th><th>販売数</th></tr></thead><tbody>${monthRows||'<tr><td colspan="2" style="text-align:center;color:var(--text3);padding:10px">記録なし</td></tr>'}</tbody></table></div>
+    </div>
+    <div id="margin-hist-panel" style="display:none;margin-bottom:12px">
+      <div class="sh">利益率推移</div>
+      <div class="tw"><table><thead><tr><th>売れた日</th><th>数量</th><th>売上</th><th>利益率</th></tr></thead><tbody>${marginHistRows||'<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:10px">記録なし</td></tr>'}</tbody></table></div>
+    </div>
+    <div id="cost-hist-panel" style="display:none;margin-bottom:12px">
+      <div class="sh">原価推移</div>
+      <div class="tw"><table><thead><tr><th>仕入日</th><th>原価/個</th><th>数量</th></tr></thead><tbody>${costHistRows||'<tr><td colspan="3" style="text-align:center;color:var(--text3);padding:10px">記録なし</td></tr>'}</tbody></table></div>
+    </div>
+    <div class="sh">仕入れ・輸入履歴</div>
+    <div class="tw" style="margin-bottom:12px"><table><thead><tr><th>仕入日/着荷日</th><th>仕入数</th><th>残り</th><th>仕入値</th><th>国内送料</th><th>国際送料</th><th>原価/個</th></tr></thead><tbody>${sr}</tbody></table></div>
+    <div class="sh">売上履歴</div>
+    <div class="tw" style="margin-bottom:12px"><table><thead><tr><th>売れた日</th><th>数量</th><th>売上</th><th>利益</th></tr></thead><tbody>${lr}</tbody></table></div>
+    <div class="sh">不良品履歴</div>
+    <div class="tw"><table><thead><tr><th>日付</th><th>数量</th><th>タイミング / 理由</th><th>送料損失</th><th>メモ</th></tr></thead><tbody>${dr}</tbody></table></div>
+    <div class="brow" style="margin-top:12px">
+      <button class="btn suc" onclick="closeOv('ov-product');openSell(${pid})">✓ 売れた</button>
+      <button class="btn inf" onclick="closeOv('ov-product');openRestock(${pid})">＋ 補充</button>
+      <button class="btn" style="background:var(--ambg);color:var(--am);border-color:var(--am)" onclick="closeOv('ov-product');openDefect(${pid})">⚠ 不良品</button>
+    </div>`;
+  openOv('ov-product');
+}
+function toggleCostHist(){const p=g('cost-hist-panel'),a=g('cost-hist-arr');if(!p)return;const show=p.style.display==='none';p.style.display=show?'':'none';if(a)a.textContent=show?'▲':'▼';}
+function toggleMarginHist(){const p=g('margin-hist-panel'),a=g('margin-hist-arr');if(!p)return;const show=p.style.display==='none';p.style.display=show?'':'none';if(a)a.textContent=show?'▲':'▼';}
+function toggleMonthSales(){const p=g('month-sales-panel'),a=g('month-sales-arr');if(!p)return;const show=p.style.display==='none';p.style.display=show?'':'none';if(a)a.textContent=show?'▲':'▼';}
+function delProd(pid){const p=products.find(x=>x.id===pid);if(p&&confirm(`「${p.name}」を削除しますか？`)){products=products.filter(x=>x.id!==pid);sv();renderInventory();renderAdd()}}
+function hideProd(pid){const p=products.find(x=>x.id===pid);if(!p)return;p.hidden=true;sv();renderInvRows();renderDashboard();}
+function showProd(pid){const p=products.find(x=>x.id===pid);if(!p)return;p.hidden=false;sv();renderInvRows();}
+function saveProdSellPrice(pid,val){const price=parseInt(val);if(!price||price<=0)return;const p=products.find(x=>x.id===pid);if(!p)return;p.sellPrice=price;sv();renderInvRows();}
+function saveYomi(pid,val){const p=products.find(x=>x.id===pid);if(p){p.yomi=val.trim();sv()}}
+
+// ====================================================
+// SALES
+// ====================================================
+function renderSales(){
+  const pg=g('pg-sales');if(!pg)return;
+  const [sy,sm]=curMonth.split('-');
+  const nav=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+    <button class="mbtn" onclick="chMonth(-1)">◀</button>
+    <span style="font-weight:700;font-size:15px;min-width:90px;text-align:center">${sy}年${parseInt(sm)}月</span>
+    <button class="mbtn" onclick="chMonth(1)">▶</button>
+    <button class="btn" style="font-size:11px;padding:3px 9px;min-height:0" onclick="curMonth=new Date().toISOString().slice(0,7);sv2('mpick',curMonth);updMLabel();renderActive()">今月</button>
+  </div>`;
+  const ms=mSales(curMonth);
+  if(!ms.length){pg.innerHTML=nav+'<div class="empty">この月の売上はまだありません。</div>';return}
+  const rev=ms.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+  const fees=ms.reduce((s,x)=>s+x.mercFee*x.qty,0);
+  const msps=ms.reduce((s,x)=>s+x.mship*x.qty,0);
+  const cogs=ms.reduce((s,x)=>s+x.costPer*x.qty,0);
+  const sDefLoss=calcDefLoss(defectLog.filter(d=>d.date.startsWith(curMonth)));
+  const sFixed=fixedCosts.reduce((s,f)=>s+f.amount,0);
+  const profit=rev-fees-msps-cogs-sDefLoss-sFixed;
+  const qty=ms.reduce((s,x)=>s+x.qty,0);
+  const rows=[...ms].sort((a,b)=>b.ts-a.ts).map(s=>{
+    const pr=(s.sellPrice-s.mercFee-s.mship-s.costPer)*s.qty;
+    const qtyLabel=s.isSet?`<span class="bdg ok" style="font-size:10px;margin-right:3px">セット</span>${s.qty}点`:`${s.qty}点`;
+    const priceVal=s.isSet?s.setPrice:s.sellPrice;
+    const priceInput=`<input type="number" value="${priceVal}" min="1" style="width:80px;font-size:13px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;text-align:right" onchange="saveSalePrice(${s.ts},this.value)">`;
+    return`<tr><td>${s.date}</td><td style="font-weight:600">${s.name}</td><td>${qtyLabel}</td>
+      <td>${priceInput}</td><td style="color:var(--rd)">-${fy(s.mercFee*s.qty)}</td><td>${fy(s.costPer)}</td>
+      <td class="${pr>=0?'pp':'pn'}">${fy(pr)}</td>
+      <td><button class="btn dan" style="font-size:11px;padding:4px 7px;min-height:0" onclick="delSale(${s.ts})">取消</button></td></tr>`;
+  }).join('');
+  pg.innerHTML=nav+`<div class="mets">
+    <div class="met"><div class="ml">件数/点数</div><div class="mv">${ms.length}件/${qty}点</div></div>
+    <div class="met"><div class="ml">売上合計</div><div class="mv g">${fy(rev)}</div></div>
+    <div class="met"><div class="ml">売上原価</div><div class="mv r">${fy(cogs)}</div></div>
+    <div class="met"><div class="ml">手数料+送料</div><div class="mv r">${fy(fees+msps)}</div></div>
+    ${sDefLoss>0?`<div class="met"><div class="ml">不良品損失</div><div class="mv r">⚠ ${fy(sDefLoss)}</div></div>`:''}
+    ${sFixed>0?`<div class="met"><div class="ml">固定費</div><div class="mv r">${fy(sFixed)}</div></div>`:''}
+    <div class="met"><div class="ml">純利益</div><div class="mv ${profit>=0?'g':'r'}">${fy(profit)}</div></div>
+    <div class="met"><div class="ml">利益率</div><div class="mv ${profit>=0?'g':'r'}">${rev>0?((profit/rev)*100).toFixed(1):0}%</div></div>
+  </div>
+  <div class="tw"><table><thead><tr><th>日付</th><th>商品名</th><th>数量</th><th>売上</th><th>手数料</th><th>原価/個</th><th>利益</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function delSale(ts){if(confirm('この売上を取り消しますか？')){salesLog=salesLog.filter(s=>s.ts!==ts);sv();renderSales()}}
+function saveSalePrice(ts,val){
+  const price=parseInt(val);if(!price||price<=0)return;
+  const s=salesLog.find(x=>x.ts===ts);if(!s)return;
+  const fr=(s.feeRate||10)/100;
+  if(s.isSet){
+    s.setPrice=price;s.sellPrice=Math.round(price/s.setQty);
+    s.mercFee=Math.round(price*fr/s.setQty);
+  } else {
+    s.sellPrice=price;s.mercFee=Math.round(price*fr);
+  }
+  sv();renderSales();
+}
+function openInit(){
+  const opts=products.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+  const blank='<option value="">選択してください</option>';
+  const isPid=g('is-pid'),issPid=g('iss-pid');
+  if(isPid)isPid.innerHTML=blank+opts;
+  if(issPid)issPid.innerHTML=blank+opts;
+  sv2('is-qty','1');sv2('is-cost-cny','');sv2('iss-qty','1');
+  sv2('is-date',new Date().toISOString().slice(0,10));
+  if(_rate)sv2('is-rate',_rate);
+  if(g('is-prev'))g('is-prev').style.display='none';
+  if(g('is-msg'))g('is-msg').innerHTML='';
+  if(g('iss-msg'))g('iss-msg').innerHTML='';
+  setInitTab('stock');
+  openOv('ov-init');
+}
+function setInitTab(t){
+  g('init-tab-stock')?.classList.toggle('on',t==='stock');
+  g('init-tab-sales')?.classList.toggle('on',t==='sales');
+  if(g('init-stock-panel'))g('init-stock-panel').style.display=t==='stock'?'block':'none';
+  if(g('init-sales-panel'))g('init-sales-panel').style.display=t==='sales'?'block':'none';
+}
+function isCalc(){
+  const cny=parseFloat(gv('is-cost-cny'))||0,rate=parseFloat(gv('is-rate'))||21;
+  const box=g('is-prev');if(!box)return;
+  if(!cny){box.style.display='none';return}
+  const jpy=Math.round(cny*rate);
+  box.style.display='block';
+  box.innerHTML=`元${cny} × ${rate}円 = <strong>原価 ${fy(jpy)}/個</strong>`;
+}
+function confirmInitStock(){
+  const pid=parseInt(gv('is-pid'))||0;
+  const qty=parseInt(gv('is-qty'))||0;
+  const cny=parseFloat(gv('is-cost-cny'))||0;
+  const rate=parseFloat(gv('is-rate'))||21;
+  const date=gv('is-date')||'2026-04-30';
+  const p=products.find(x=>x.id===pid);
+  if(!p){showMsg('is-msg','商品を選択してください','err');return}
+  if(qty<=0){showMsg('is-msg','数量を入力してください','err');return}
+  if(cny<=0){showMsg('is-msg','原価（元）を入力してください','err');return}
+  const cost=Math.round(cny*rate);
+  const _today=new Date().toISOString().slice(0,10);
+  shipments.push({id:Date.now(),date,importDate:'',memo:'初期在庫',rate,
+    domCny:0,intlJpy:0,tariffJpy:0,totalQty:qty,intlPer:0,tariffPer:0,
+    items:[{pid,name:p.name,qty,cnyPer:cny,domPerJpy:0,cnyJpy:cost,domJpy:0,tariffJpy:0,intlJpy:0,totalCostPer:cost}],
+    totalCostJpy:cost*qty,month:date.slice(0,7),status:'closed',isInitial:true,...(date>_today?{rateProvisional:true}:{})});
+  sv();showMsg('is-msg',`✓ ${p.name} ${qty}点 (${fy(cost)}/個) を初期在庫として登録しました`,'ok');
+  renderInventory();
+}
+function issAutoFill(){
+  const pid=parseInt(gv('iss-pid'))||0;
+  const p=products.find(x=>x.id===pid);
+  if(!p)return;
+  if(p.sellPrice)sv2('iss-sell',p.sellPrice);
+  if(p.mship)sv2('iss-ship',p.mship);
+}
+function confirmInitSales(){
+  const pid=parseInt(gv('iss-pid'))||0;
+  const qty=parseInt(gv('iss-qty'))||0;
+  const p=products.find(x=>x.id===pid);
+  if(!p){showMsg('iss-msg','商品を選択してください','err');return}
+  if(qty<=0){showMsg('iss-msg','数量を入力してください','err');return}
+  const stock=getStock(pid);
+  if(qty>stock){showMsg('iss-msg',`在庫(${stock}点)を超えています`,'err');return}
+  const costPer=getLatestCost(pid);
+  const sellPrice=parseInt(gv('iss-sell'))||0;
+  const feeRate=(parseFloat(gv('iss-fee'))||10)/100;
+  const mship=parseInt(gv('iss-ship'))||0;
+  const mercFee=Math.round(sellPrice*feeRate);
+  salesLog.push({pid,name:p.name,cat:p.cat,sellPrice,mship,mercFee,
+    feeRate:feeRate*100,platform:'initial',costPer,qty,date:'2026-04-01',ts:Date.now(),isInitial:true});
+  sv();showMsg('iss-msg',`✓ ${p.name} ${qty}点を期初売上として記録しました`,'ok');
+  renderInventory();
+}
+function openAddFixed(){sv2('fc-name','');sv2('fc-amount','');if(g('fc-msg'))g('fc-msg').innerHTML='';openOv('ov-fixed');setTimeout(()=>g('fc-name')?.focus(),80)}
+function confirmAddFixed(){
+  const name=gv('fc-name').trim(),amount=parseInt(gv('fc-amount'))||0;
+  if(!name){showMsg('fc-msg','費用名を入力してください','err');return}
+  if(!amount){showMsg('fc-msg','金額を入力してください','err');return}
+  fixedCosts.push({id:Date.now(),name,amount});
+  sv();closeOv('ov-fixed');renderDashboard();toast(`✓ ${name} を追加しました`);
+}
+function delFixed(id){if(confirm('この固定費を削除しますか？')){fixedCosts=fixedCosts.filter(f=>f.id!==id);sv();renderDashboard()}}
+
+// ====================================================
+// SHIPMENTS（日付で自動便作成）
+// ====================================================
+let _shMode='single'; // 'single' | 'bulk'
+let _shMonth=new Date().toISOString().slice(0,7);
+
+function renderShipments(){
+  const pg=g('pg-shipments');if(!pg)return;
+  const today=new Date().toISOString().slice(0,10);
+  const curRate=_rate||21;
+  pg.innerHTML=`
+  <!-- モード切替 -->
+  <div style="display:flex;gap:3px;background:var(--bg2);border-radius:var(--rs);padding:3px;margin-bottom:12px;width:fit-content">
+    <button class="dtab ${_shMode==='single'?'on':''}" style="flex:none;padding:6px 16px;min-width:0" onclick="setShMode('single')">1件ずつ</button>
+    <button class="dtab ${_shMode==='bulk'?'on':''}" style="flex:none;padding:6px 16px;min-width:0" onclick="setShMode('bulk')">📋 一括入力</button>
+  </div>
+
+  <div id="sh-single" style="display:${_shMode==='single'?'block':'none'}">
+    <div class="card">
+      <div class="ct">📦 商品を追加する</div>
+      <div class="ib bl">日付・商品・数量・仕入値を入力して追加。国内送料を入れると自動按分されます。国際送料は便カードで後入力。</div>
+      <div class="fr c3">
+        <div class="fg">
+          <label>仕入れ日</label>
+          <input type="date" id="sh-date" value="${today}" onchange="shChk()">
+          <span id="sh-hint" class="ht"></span>
+        </div>
+        <div class="fg"><label>商品</label>${prodSearchHtml('sh-pid-q','sh-pid','商品名で検索…')}</div>
+        <div class="fg"><label>為替レート（円/元）<button type="button" style="font-size:10px;padding:1px 5px;margin-left:4px" class="btn" onclick="fetchRateForDate('sh-rate',gv('sh-date'))">再取得</button></label><input type="number" id="sh-rate" value="${curRate}" step="0.1" oninput="shPrev()"></div>
+      </div>
+      <div class="fr c3">
+        <div class="fg"><label>数量（個）</label><input type="number" id="sh-qty" value="1" min="1" oninput="shPrev()"></div>
+        <div class="fg"><label>仕入値（元）</label><input type="number" id="sh-cny" placeholder="例: 80" step="0.01" oninput="shPrev()"><span class="ht">1個あたりの仕入れ値</span></div>
+        <div class="fg">
+          <label>国内送料 合計（元）</label>
+          <input type="number" id="sh-dom" value="" placeholder="例: 30" step="0.01" oninput="shPrev()">
+          <span id="sh-dom-per" class="ht"></span>
+        </div>
+      </div>
+      <div id="sh-prev" style="display:none;background:var(--blbg);border-radius:var(--rs);padding:9px 13px;font-size:13px;color:var(--bl);margin-bottom:10px;line-height:1.9"></div>
+      <div class="brow">
+        <button class="btn pri" onclick="shAdd()">＋ この商品を追加</button>
+        <button class="btn" onclick="shClr()">クリア</button>
+      </div>
+      <div id="sh-msg"></div>
+    </div>
+  </div>
+
+  <div id="sh-bulk" style="display:${_shMode==='bulk'?'block':'none'}">
+    <div class="card">
+      <div class="ct">📋 一括入力</div>
+      <div class="ib bl">国内送料合計（元）を入れると数量÷送料で自動計算。国際送料は便カードで後入力。</div>
+      <div class="fr" style="margin-bottom:14px">
+        <div class="fg"><label>仕入れ日</label><input type="date" id="bk-date" value="${today}" onchange="bkChk()"><span id="bk-hint" class="ht"></span></div>
+        <div class="fg"><label>為替レート（円/元）<button type="button" style="font-size:10px;padding:1px 5px;margin-left:4px" class="btn" onclick="fetchRateForDate('bk-rate',gv('bk-date'))">再取得</button></label><input type="number" id="bk-rate" value="${curRate}" step="0.1" oninput="bkCalcAll()"></div>
+      </div>
+      <!-- 一括入力テーブル -->
+      <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;min-width:640px">
+          <thead>
+            <tr>
+              <th style="width:28px;text-align:center;padding:6px 4px;font-size:10px;font-weight:700;color:var(--text2);border-bottom:0.5px solid var(--border);background:var(--bg2)">#</th>
+              <th style="padding:6px 8px;font-size:10px;font-weight:700;color:var(--text2);border-bottom:0.5px solid var(--border);background:var(--bg2);min-width:160px">商品名</th>
+              <th style="padding:6px 8px;font-size:10px;font-weight:700;color:var(--text2);border-bottom:0.5px solid var(--border);background:var(--bg2);min-width:60px;text-align:center">数量</th>
+              <th style="padding:6px 8px;font-size:10px;font-weight:700;color:var(--text2);border-bottom:0.5px solid var(--border);background:var(--bg2);min-width:80px;text-align:right">仕入値/個（元）</th>
+              <th style="padding:6px 8px;font-size:10px;font-weight:700;color:var(--am);border-bottom:0.5px solid var(--border);background:var(--bg2);min-width:80px;text-align:right">国内送料合計（元）</th>
+              <th style="padding:6px 8px;font-size:10px;font-weight:700;color:var(--am);border-bottom:0.5px solid var(--border);background:var(--bg2);min-width:70px;text-align:right">国内/個（円）</th>
+              <th style="padding:6px 8px;font-size:10px;font-weight:700;color:var(--bl);border-bottom:0.5px solid var(--border);background:var(--bg2);min-width:80px;text-align:right">原価/個※</th>
+              <th style="width:28px;border-bottom:0.5px solid var(--border);background:var(--bg2)"></th>
+            </tr>
+          </thead>
+          <tbody id="bk-tbody"></tbody>
+          <tfoot id="bk-tfoot"></tfoot>
+        </table>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">※国際送料は含まず</div>
+      <div class="brow" style="margin-top:10px">
+        <button class="btn suc" onclick="bkAddRow()">＋ 行追加</button>
+        <button class="btn pri" onclick="bkSubmit()">✓ まとめて登録</button>
+        <button class="btn" onclick="bkClear()">クリア</button>
+      </div>
+      <div id="bk-msg"></div>
+    </div>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:8px;margin:16px 0 8px">
+    <span class="sh" style="margin:0">便一覧</span>
+    <button class="mbtn" onclick="shMonthMove(-1)">◀</button>
+    <span id="sh-month-lbl" style="font-size:13px;font-weight:700;white-space:nowrap"></span>
+    <button class="mbtn" onclick="shMonthMove(1)">▶</button>
+    <button class="btn" style="font-size:11px;padding:3px 9px;min-height:0" onclick="_shMonth=new Date().toISOString().slice(0,7);renderBatches()">今月</button>
+  </div>
+  <div id="sh-batches"></div>`;
+  shChk();bkChk();
+  if(_shMode==='bulk') bkInit();
+  renderBatches();
+}
+
+// ====================================================
+// 商品検索ドロップダウン（共通コンポーネント）
+// ====================================================
+// 使い方: prodSearchHtml(inputId, selectId, placeholder)
+// → HTML文字列を返す。選択するとhiddenのselectIdに値が入る
+function prodSearchHtml(inputId, hiddenId, placeholder='商品を検索…'){
+  const cats=[...new Set(products.map(p=>p.cat))];
+  return `<div style="position:relative" id="psd-wrap-${hiddenId}">
+    <input type="text" id="${inputId}" placeholder="${placeholder}"
+      autocomplete="off"
+      style="padding:9px 10px;border:0.5px solid var(--border2);border-radius:var(--rs);font-size:14px;background:var(--bg);color:var(--text);width:100%;outline:none"
+      oninput="psdFilter('${hiddenId}')"
+      onfocus="psdOpen('${hiddenId}')"
+      onblur="setTimeout(()=>psdClose('${hiddenId}'),180)">
+    <input type="hidden" id="${hiddenId}">
+    <div id="psd-dd-${hiddenId}"
+      style="display:none;position:absolute;top:100%;left:0;right:0;z-index:300;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--rs);box-shadow:0 4px 16px rgba(0,0,0,.15);max-height:260px;overflow-y:auto;margin-top:2px">
+      <div id="psd-list-${hiddenId}"></div>
+    </div>
+  </div>`;
+}
+
+function psdOpen(hid){
+  psdFilter(hid);
+  const dd=g('psd-dd-'+hid);if(dd)dd.style.display='block';
+}
+function psdClose(hid){
+  const dd=g('psd-dd-'+hid);if(dd)dd.style.display='none';
+}
+function psdFilter(hid){
+  const inputEl=g('psd-wrap-'+hid)?.querySelector('input[type=text]');
+  const q=(inputEl?.value||'').toLowerCase().trim();
+  const list=g('psd-list-'+hid);if(!list)return;
+  const cats=[...new Set(products.map(p=>p.cat))];
+  let html='';
+  let shown=0;
+  cats.forEach(cat=>{
+    const qH=romaToHira(q);const qN=kataToHira(q);const qHN=kataToHira(qH);const ps=products.filter(p=>p.cat===cat&&(!q||(()=>{const n=kataToHira(p.name.toLowerCase()),y=kataToHira((p.yomi||'').toLowerCase());return n.includes(qN)||y.includes(qN)||(qH!==q&&(n.includes(qHN)||y.includes(qHN)));})()));
+    if(!ps.length)return;
+    html+=`<div style="font-size:10px;font-weight:700;color:var(--text3);padding:6px 10px 2px;text-transform:uppercase;letter-spacing:.04em;background:var(--bg2)">${cat}</div>`;
+    ps.forEach(p=>{
+      const stock=getStock(p.id);
+      const sb=stock<=0?'<span style="font-size:10px;color:var(--rd)">切れ</span>':
+               stock<=p.alert?`<span style="font-size:10px;color:var(--am)">残${stock}</span>`:
+               `<span style="font-size:10px;color:var(--text3)">${stock}点</span>`;
+      const hl=q?p.name.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),'<mark style="background:rgba(255,200,0,.4);border-radius:2px">$1</mark>'):p.name;
+      html+=`<div style="padding:9px 12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:0.5px solid var(--border);font-size:13px"
+        onmousedown="psdSelect('${hid}',${p.id},'${p.name.replace(/'/g,"\\'")}')">
+        <span>${hl}</span>${sb}
+      </div>`;
+      shown++;
+    });
+  });
+  if(!shown) html='<div style="padding:14px;text-align:center;color:var(--text3);font-size:13px">一致する商品がありません</div>';
+  list.innerHTML=html;
+  const dd=g('psd-dd-'+hid);if(dd)dd.style.display='block';
+}
+function psdSelect(hid, pid, name){
+  const inputEl=g('psd-wrap-'+hid)?.querySelector('input[type=text]');
+  if(inputEl)inputEl.value=name;
+  const hidden=g(hid);if(hidden)hidden.value=pid;
+  psdClose(hid);
+  // 関連する計算を呼ぶ
+  if(hid==='sh-pid') shPrev();
+  const bndMatch=hid.match(/^bnd-pid-(\d+)$/);
+  if(bndMatch){const i=parseInt(bndMatch[1]);if(_bndRows[i])_bndRows[i].pid=pid;bndCalc();}
+}
+// 一括入力の行用（行indexで一意なidを使う）
+function psdSelectBulk(hid, rowIdx, pid, name){
+  const inputEl=g('psd-wrap-'+hid)?.querySelector('input[type=text]');
+  if(inputEl)inputEl.value=name;
+  const hidden=g(hid);if(hidden)hidden.value=pid;
+  psdClose(hid);
+  _bkRows[rowIdx].pid=pid;
+  bkCalcRow(rowIdx);
+}
+function setShMode(m){
+  _shMode=m;
+  const s=g('sh-single'),b=g('sh-bulk');
+  if(s)s.style.display=m==='single'?'block':'none';
+  if(b)b.style.display=m==='bulk'?'block':'none';
+  const modeTabs=document.querySelectorAll('#pg-shipments .dtab');
+  modeTabs.forEach(t=>{t.classList.toggle('on',t.textContent.includes(m==='single'?'1件':'一括'))});
+  if(m==='bulk'&&!g('bk-tbody')?.children.length) bkInit();
+}
+
+// ====================================================
+// 一括入力
+// ====================================================
+let _bkRows=[]; // [{pid,qty,cny}]
+
+function bkInit(){
+  _bkRows=[{pid:'',qty:1,cny:'',dom:0},{pid:'',qty:1,cny:'',dom:0},{pid:'',qty:1,cny:'',dom:0}];
+  bkRender();
+}
+function bkChk(){
+  const date=gv('bk-date');const hint=g('bk-hint');if(!hint)return;
+  const ex=shipments.find(s=>s.date===date&&(s.status==='open'||s.status===''));
+  if(ex){hint.textContent=`この日の便に ${ex.items.length}種類 登録済み — 追加されます`;hint.style.color='var(--gn)'}
+  else{hint.textContent='新しい便が自動作成されます';hint.style.color='var(--text3)'}
+  fetchRateForDate('bk-rate',date);
+}
+function bkRender(){
+  const tbody=g('bk-tbody');if(!tbody)return;
+  const rate=parseFloat(gv('bk-rate'))||21;
+  tbody.innerHTML=_bkRows.map((row,i)=>{
+    const qty=row.qty||1;
+    const cj=row.cny?Math.round(row.cny*rate):0;
+    const dj=row.dom>0?Math.round(row.dom*rate/qty):0;
+    const costPer=row.cny?(cj+dj):0;
+    const hidId=`bkpid-${i}`;
+    const selName=row.pid?products.find(p=>p.id===row.pid)?.name||'':'';
+    return `<tr id="bkr-${i}" style="border-bottom:0.5px solid var(--border)">
+      <td style="text-align:center;color:var(--text3);font-size:12px;padding:4px">${i+1}</td>
+      <td style="padding:4px 6px;min-width:160px">
+        <div style="position:relative" id="psd-wrap-${hidId}">
+          <input type="text" id="bkp-${i}-q" value="${selName.replace(/"/g,'&quot;')}" placeholder="商品名で検索…"
+            autocomplete="off"
+            style="padding:7px 8px;border:0.5px solid var(--border2);border-radius:var(--rs);font-size:13px;background:var(--bg);color:var(--text);width:100%;outline:none"
+            oninput="bkPsdFilter(${i})" onfocus="bkPsdOpen(${i})"
+            onblur="setTimeout(()=>bkPsdClose(${i}),180)" onkeydown="bkKey(event,${i},'pid')">
+          <input type="hidden" id="${hidId}" value="${row.pid||''}">
+          <div id="bkpd-${i}" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:300;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--rs);box-shadow:0 4px 16px rgba(0,0,0,.15);max-height:220px;overflow-y:auto;margin-top:2px"></div>
+        </div>
+      </td>
+      <td style="padding:4px 6px;text-align:center">
+        <input type="number" value="${qty}" min="1"
+          style="width:58px;padding:7px 6px;font-size:13px;border:0.5px solid var(--border2);border-radius:var(--rs);background:var(--bg);color:var(--text);text-align:center"
+          onchange="_bkRows[${i}].qty=parseInt(this.value)||1;bkCalcRow(${i})" onkeydown="bkKey(event,${i},'qty')">
+      </td>
+      <td style="padding:4px 6px;text-align:right">
+        <input type="number" value="${row.cny||''}" step="0.01" placeholder="例: 80"
+          style="width:72px;padding:7px 6px;font-size:13px;border:0.5px solid var(--border2);border-radius:var(--rs);background:var(--bg);color:var(--text);text-align:right"
+          onchange="_bkRows[${i}].cny=parseFloat(this.value)||'';bkCalcRow(${i})" onkeydown="bkKey(event,${i},'cny')">
+      </td>
+      <td style="padding:4px 6px;text-align:right">
+        <input type="number" value="${row.dom||''}" step="0.01" placeholder="例: 30"
+          style="width:68px;padding:7px 6px;font-size:13px;border:0.5px solid var(--border2);border-radius:var(--rs);background:var(--bg);color:var(--text);text-align:right"
+          onchange="_bkRows[${i}].dom=parseFloat(this.value)||0;bkCalcRow(${i})" onkeydown="bkKey(event,${i},'dom')">
+      </td>
+      <td style="padding:4px 8px;text-align:right;font-size:12px;color:${dj>0?'var(--am)':'var(--text3)'}">
+        ${dj>0?fy(dj):'−'}${row.dom>0&&qty>1?`<br><span style="font-size:10px">元${row.dom}÷${qty}個</span>`:''}
+      </td>
+      <td style="padding:4px 8px;text-align:right;font-size:13px;font-weight:${costPer>0?'700':'400'};color:${costPer>0?'var(--bl)':'var(--text3)'}">
+        ${costPer>0?fy(costPer):'−'}
+      </td>
+      <td style="padding:4px 4px;text-align:center">
+        <button onclick="bkDelRow(${i})" style="background:none;border:none;color:var(--text3);font-size:15px;cursor:pointer;padding:2px 4px;line-height:1">✕</button>
+      </td>
+    </tr>`;
+  }).join('');
+  bkUpdateFoot();
+}
+
+// 一括入力の行内検索UI
+function bkPsdOpen(i){bkPsdFilter(i);const dd=g('bkpd-'+i);if(dd)dd.style.display='block'}
+function bkPsdClose(i){const dd=g('bkpd-'+i);if(dd)dd.style.display='none'}
+function bkPsdFilter(i){
+  const inputEl=g(`bkp-${i}-q`);
+  const q=(inputEl?.value||'').toLowerCase().trim();
+  const dd=g('bkpd-'+i);if(!dd)return;
+  const cats=[...new Set(products.map(p=>p.cat))];
+  let html='';let shown=0;
+  cats.forEach(cat=>{
+    const qH=romaToHira(q);const qN=kataToHira(q);const qHN=kataToHira(qH);const ps=products.filter(p=>p.cat===cat&&(!q||(()=>{const n=kataToHira(p.name.toLowerCase()),y=kataToHira((p.yomi||'').toLowerCase());return n.includes(qN)||y.includes(qN)||(qH!==q&&(n.includes(qHN)||y.includes(qHN)));})()));
+    if(!ps.length)return;
+    html+=`<div style="font-size:10px;font-weight:700;color:var(--text3);padding:5px 10px 2px;text-transform:uppercase;letter-spacing:.04em;background:var(--bg2)">${cat}</div>`;
+    ps.forEach(p=>{
+      const stock=getStock(p.id);
+      const sb=stock<=0?'<span style="font-size:10px;color:var(--rd)">切れ</span>':
+               stock<=p.alert?`<span style="font-size:10px;color:var(--am)">残${stock}</span>`:
+               `<span style="font-size:10px;color:var(--text3)">${stock}点</span>`;
+      const hl=q?p.name.replace(new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')})`,'gi'),'<mark style="background:rgba(255,200,0,.4);border-radius:2px">$1</mark>'):p.name;
+      html+=`<div style="padding:8px 12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:0.5px solid var(--border);font-size:13px"
+        onmousedown="bkPsdSelect(${i},${p.id},'${p.name.replace(/'/g,"\\'")}')">
+        <span>${hl}</span>${sb}
+      </div>`;
+      shown++;
+    });
+  });
+  if(!shown)html='<div style="padding:12px;text-align:center;color:var(--text3);font-size:13px">一致する商品がありません</div>';
+  dd.innerHTML=html;dd.style.display='block';
+}
+function bkPsdSelect(i,pid,name){
+  const inputEl=g(`bkp-${i}-q`);if(inputEl)inputEl.value=name;
+  const hidden=g(`bkpid-${i}`);if(hidden)hidden.value=pid;
+  bkPsdClose(i);
+  _bkRows[i].pid=pid;
+  bkCalcRow(i);
+}
+function bkCalcRow(i){bkRender()} // 全行再レンダリング（シンプルに）
+function bkCalcAll(){bkRender()}
+function bkUpdateFoot(){
+  const tfoot=g('bk-tfoot');if(!tfoot)return;
+  const rate=parseFloat(gv('bk-rate'))||21;
+  const validRows=_bkRows.filter(r=>r.pid&&r.qty&&r.cny);
+  if(!validRows.length){tfoot.innerHTML='';return}
+  const totalQty=validRows.reduce((s,r)=>s+r.qty,0);
+  const totalCost=validRows.reduce((s,r)=>s+Math.round(r.cny*rate)*r.qty,0);
+  const kinds=validRows.length;
+  tfoot.innerHTML=`<tr style="background:var(--bg2);font-weight:700">
+    <td colspan="2" style="padding:8px 10px;font-size:12px">合計 ${kinds}種類</td>
+    <td style="text-align:center;padding:8px">${totalQty}個</td>
+    <td colspan="2"></td>
+    <td style="text-align:right;padding:8px;color:var(--bl)">※国内・国際送料別</td>
+    <td style="text-align:right;padding:8px">${fy(totalCost)}</td>
+    <td></td>
+  </tr>`;
+}
+function bkAddRow(){
+  _bkRows.push({pid:'',qty:1,cny:'',dom:0});
+  bkRender();
+  setTimeout(()=>{
+    const rows=g('bk-tbody')?.querySelectorAll('tr');
+    if(rows?.length) rows[rows.length-1].querySelector('input[type=text]')?.focus();
+  },50);
+}
+function bkDelRow(i){
+  if(_bkRows.length<=1){_bkRows=[{pid:'',qty:1,cny:'',dom:0}];bkRender();return}
+  _bkRows.splice(i,1);bkRender();
+}
+function bkClear(){_bkRows=[{pid:'',qty:1,cny:'',dom:0},{pid:'',qty:1,cny:'',dom:0},{pid:'',qty:1,cny:'',dom:0}];bkRender();bkChk()}
+function bkKey(e,i,col){
+  if(e.key!=='Enter')return;
+  e.preventDefault();
+  if(i===_bkRows.length-1) bkAddRow();
+  setTimeout(()=>{
+    const rows=g('bk-tbody')?.querySelectorAll('tr');
+    if(!rows||!rows[i+1])return;
+    const inputs=rows[i+1].querySelectorAll('input:not([type=hidden])');
+    if(col==='pid') inputs[0]?.focus();
+    else if(col==='qty') inputs[1]?.focus();
+    else if(col==='cny') inputs[2]?.focus();
+    else if(col==='dom') inputs[1]?.focus(); // 次の行の数量へ
+  },50);
+}
+function bkSubmit(){
+  const date=gv('bk-date');
+  const rate=parseFloat(gv('bk-rate'))||21;
+  if(!date){showMsg('bk-msg','日付を選択してください','err');return}
+  _bkRows.forEach((row,i)=>{const h=g('bkpid-'+i);if(h&&h.value)row.pid=parseInt(h.value)||''});
+  const valid=_bkRows.filter(r=>r.pid&&r.qty&&r.cny);
+  if(!valid.length){showMsg('bk-msg','商品・数量・仕入値を1行以上入力してください','err');return}
+  const _today=new Date().toISOString().slice(0,10);
+  let sh=shipments.find(s=>s.date===date&&(s.status==='open'||s.status===''));
+  if(!sh){
+    sh={id:Date.now(),date,importDate:'',memo:'',rate,domCny:0,intlJpy:0,totalQty:0,intlPer:0,domPer:0,items:[],totalCostJpy:0,month:date.slice(0,7),status:'open'};
+    if(date>_today)sh.rateProvisional=true;
+    shipments.push(sh);
+  }else{sh.rate=rate;if(date>_today)sh.rateProvisional=true;else delete sh.rateProvisional;}
+  let added=0;
+  valid.forEach(row=>{
+    const pid=parseInt(row.pid);
+    const pn=products.find(p=>p.id===pid)?.name||'';
+    const rate=parseFloat(gv('bk-rate'))||21;
+    const domPerJpy=row.dom>0?Math.round(row.dom*rate/(row.qty||1)):0;
+    const ex=sh.items.findIndex(it=>it.pid===pid);
+    if(ex>=0){sh.items[ex].qty+=row.qty;sh.items[ex].cnyPer=row.cny;sh.items[ex].domPerJpy=domPerJpy}
+    else sh.items.push({pid,name:pn,qty:row.qty,cnyPer:row.cny,domPerJpy,cnyJpy:0,domJpy:0,intlJpy:0,totalCostPer:0});
+    added++;
+  });
+  recalc(sh);sv();
+  const tq=sh.items.reduce((s,it)=>s+it.qty,0);
+  showMsg('bk-msg',`✓ ${added}種類・${valid.reduce((s,r)=>s+r.qty,0)}個 を一括登録しました（${date}の便: ${sh.items.length}種類・${tq}個）`,'ok');
+  bkClear();bkChk();renderBatches();
+}
+
+function shChk(){
+  const date=gv('sh-date');const hint=g('sh-hint');if(!hint)return;
+  const ex=shipments.find(s=>s.date===date&&(s.status==='open'||s.status===''));
+  if(ex){hint.textContent=`この日の便に ${ex.items.length}種類・${ex.totalQty}個 登録済み — 追加します`;hint.style.color='var(--gn)'}
+  else{hint.textContent='新しい便が自動作成されます';hint.style.color='var(--text3)'}
+  fetchRateForDate('sh-rate',date);
+}
+function shPrev(){
+  const qty=parseInt(gv('sh-qty'))||0,cny=parseFloat(gv('sh-cny'))||0;
+  const rate=parseFloat(gv('sh-rate'))||21;
+  const domTotal=parseFloat(gv('sh-dom'))||0;
+  const hint=g('sh-dom-per');
+  if(hint){
+    if(domTotal>0&&qty>0){
+      const perJpy=Math.round(domTotal*rate/qty);
+      hint.textContent=`→ 1個あたり ${perJpy.toLocaleString('ja-JP')}円（${qty}個で按分）`;
+      hint.style.color='var(--am)';
+    } else {
+      hint.textContent='数量を入力すると1個あたりを計算';
+      hint.style.color='';
+    }
+  }
+  const box=g('sh-prev');if(!box)return;
+  if(!qty||!cny){box.style.display='none';return}
+  const cj=Math.round(cny*rate);
+  const dj=domTotal>0?Math.round(domTotal*rate/qty):0;
+  const costPer=cj+dj;
+  box.style.display='block';
+  box.innerHTML=`仕入値 <strong>${fy(cj)}</strong>${dj>0?`　国内送料 <strong>${fy(dj)}</strong>/個`:'　国内送料: 未入力'}<br>原価/個（国際・関税除く）: <strong>${fy(costPer)}</strong>`;
+}
+function shAdd(){
+  const date=gv('sh-date'),pid=parseInt(gv('sh-pid'))||0;
+  const qty=parseInt(gv('sh-qty'))||0,cny=parseFloat(gv('sh-cny'))||0;
+  const rate=parseFloat(gv('sh-rate'))||21;
+  const domTotal=parseFloat(gv('sh-dom'))||0;
+  if(!date){showMsg('sh-msg','日付を選択してください','err');return}
+  if(!pid){showMsg('sh-msg','商品を選択してください','err');return}
+  if(!qty){showMsg('sh-msg','数量を入力してください','err');return}
+  if(!cny){showMsg('sh-msg','仕入値を入力してください','err');return}
+  const _today=new Date().toISOString().slice(0,10);
+  let sh=shipments.find(s=>s.date===date&&(s.status==='open'||s.status===''));
+  if(!sh){
+    sh={id:Date.now(),date,importDate:'',memo:'',rate,domCny:0,intlJpy:0,totalQty:0,intlPer:0,domPer:0,items:[],totalCostJpy:0,month:date.slice(0,7),status:'open'};
+    if(date>_today)sh.rateProvisional=true;
+    shipments.push(sh);
+  }else{sh.rate=rate;if(date>_today)sh.rateProvisional=true;else delete sh.rateProvisional;}
+  const pn=products.find(p=>p.id===pid)?.name||'';
+  const ex=sh.items.findIndex(it=>it.pid===pid);
+  const domPerJpy=domTotal>0?Math.round(domTotal*rate/qty):0;
+  if(ex>=0){
+    sh.items[ex].qty+=qty;
+    sh.items[ex].cnyPer=cny;
+    sh.items[ex].domPerJpy=domPerJpy;
+  } else {
+    sh.items.push({pid,name:pn,qty,cnyPer:cny,domPerJpy,cnyJpy:0,domJpy:0,intlJpy:0,totalCostPer:0});
+  }
+  recalc(sh);sv();
+  const tq=sh.items.reduce((s,it)=>s+it.qty,0);
+  showMsg('sh-msg',`✓ ${pn} ×${qty}個 追加（${date}の便: ${sh.items.length}種類・${tq}個）`,'ok');
+  const qi=g('psd-wrap-sh-pid')?.querySelector('input[type=text]');
+  if(qi)qi.value='';
+  sv2('sh-pid','');sv2('sh-qty','1');sv2('sh-cny','');sv2('sh-dom','');
+  if(g('sh-prev'))g('sh-prev').style.display='none';
+  if(g('sh-dom-per'))g('sh-dom-per').textContent='';
+  shChk();renderBatches();
+}
+function shClr(){
+  sv2('sh-date',new Date().toISOString().slice(0,10));
+  const qi=g('psd-wrap-sh-pid')?.querySelector('input[type=text]');
+  if(qi)qi.value='';
+  sv2('sh-pid','');sv2('sh-qty','1');sv2('sh-cny','');sv2('sh-dom','');
+  if(g('sh-prev'))g('sh-prev').style.display='none';
+  if(g('sh-dom-per'))g('sh-dom-per').textContent='';
+  shChk();
+}
+
+function shMonthMove(d){
+  const dt=new Date(_shMonth+'-01');dt.setMonth(dt.getMonth()+d);
+  _shMonth=dt.toISOString().slice(0,7);renderBatches();
+}
+function renderBatches(){
+  const wrap=g('sh-batches');if(!wrap)return;
+  const lbl=g('sh-month-lbl');
+  if(lbl){const[y,m]=_shMonth.split('-');lbl.textContent=y+'年'+parseInt(m)+'月';}
+  const msh=mShips(_shMonth).filter(sh=>!sh.isInitial);
+  if(!msh.length){wrap.innerHTML='<div class="empty">この月の便はまだありません。</div>';return}
+  wrap.innerHTML=msh.map(sh=>{
+    const isOpen=sh.status==='open'||sh.status==='';
+    const badge=isOpen?'<span class="bdg op">編集中</span>':'<span class="bdg cl">✓ 確定</span>';
+    const irows=sh.items.length===0?'<tr><td colspan="8" style="text-align:center;color:var(--text3);padding:12px">商品未追加</td></tr>':
+      sh.items.map((it,idx)=>`<tr>
+        <td style="font-weight:600">${it.name}</td>
+        <td style="text-align:center">${it.qty}個</td>
+        <td style="text-align:right">${fy(it.cnyJpy)}<span style="color:var(--text3);font-size:10px"> 元${it.cnyPer}</span></td>
+        <td style="text-align:right;color:${sh.domCny>0?'var(--text)':'var(--text3)'}">${sh.domCny>0?fy(it.domJpy):'未入力'}</td>
+        <td style="text-align:right;color:${sh.intlJpy>0?'var(--text)':'var(--text3)'}">${sh.intlJpy>0?fy(it.intlJpy):'未入力'}</td>
+        <td style="text-align:right;color:${sh.tariffJpy>0?'var(--am)':'var(--text3)'}">${sh.tariffJpy>0?fy(it.tariffJpy):'-'}</td>
+        <td style="text-align:right;font-weight:700;color:var(--bl)">${fy(it.totalCostPer)}</td>
+        <td style="text-align:right">${fy(it.totalCostPer*it.qty)}</td>
+        ${isOpen?`<td style="text-align:center;white-space:nowrap">
+          <button onclick="openEditItem(${sh.id},${idx})" style="background:none;border:none;color:var(--bl);cursor:pointer;font-size:13px;padding:2px">✏️</button>
+          <button onclick="removeItem(${sh.id},${idx})" style="background:none;border:none;color:var(--rd);cursor:pointer;font-size:13px;padding:2px">✕</button>
+        </td>`:'<td></td>'}
+      </tr>`).join('');
+
+    const intlPnl=isOpen?`<div style="margin:4px 0 4px;display:flex;gap:6px;flex-wrap:wrap">
+        <button class="btn inf" style="font-size:12px;padding:5px 11px" onclick="togIntl(${sh.id})">🚢 国際送料${sh.intlJpy>0?` (${fy(sh.intlJpy)})`:'を入力'}</button>
+        <button class="btn" style="font-size:12px;padding:5px 11px;color:var(--am);border-color:var(--am)" onclick="togTariff(${sh.id})">🧾 関税${sh.tariffJpy>0?` (${fy(sh.tariffJpy)})`:'を入力'}</button>
+      </div>
+      <div id="ip-${sh.id}" style="display:none;background:var(--bg2);border-radius:var(--rs);padding:12px;margin-bottom:8px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+          <div class="fg" style="flex:1;min-width:130px">
+            <label style="font-size:12px">合計国際輸送費（元）</label>
+            <input type="number" id="iv-${sh.id}" value="${sh.intlCny||Math.round((sh.intlJpy||0)/(sh.rate||21)*10)/10}" placeholder="例: 400"
+              style="padding:8px;border:0.5px solid var(--border2);border-radius:var(--rs);background:var(--bg);color:var(--text);font-size:14px;width:100%"
+              oninput="updIntlPrev(${sh.id},${sh.totalQty},${sh.rate||21})">
+            <span id="ipp-${sh.id}" style="font-size:12px;color:var(--gn);font-weight:600;margin-top:2px;display:block">${sh.intlJpy>0&&sh.totalQty>0?`→ 1個 ${Math.round(sh.intlPer).toLocaleString('ja-JP')}円`:''}</span>
+          </div>
+          <button class="btn pri" style="padding:8px 12px" onclick="applyIntl(${sh.id})">適用</button>
+        </div>
+      </div>
+      <div id="tp-${sh.id}" style="display:none;background:var(--ambg);border-radius:var(--rs);padding:12px;margin-bottom:8px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end">
+          <div class="fg" style="flex:1;min-width:130px">
+            <label style="font-size:12px">関税合計（円）</label>
+            <input type="number" id="tv-${sh.id}" value="${sh.tariffJpy||0}" placeholder="例: 3000"
+              style="padding:8px;border:0.5px solid var(--border2);border-radius:var(--rs);background:var(--bg);color:var(--text);font-size:14px;width:100%"
+              oninput="updTariffPrev(${sh.id},${sh.totalQty})">
+            <span id="tpp-${sh.id}" style="font-size:12px;color:var(--am);font-weight:600;margin-top:2px;display:block">${sh.tariffJpy>0&&sh.totalQty>0?`→ 1個 ${Math.round(sh.tariffPer||0).toLocaleString('ja-JP')}円`:''}</span>
+          </div>
+          <button class="btn pri" style="padding:8px 12px" onclick="applyTariff(${sh.id})">適用</button>
+        </div>
+      </div>` : '';
+
+    // この便の損益計算
+    const shPids=new Set(sh.items.map(it=>it.pid));
+    const shSales=salesLog.filter(s=>shPids.has(s.pid));
+    const shProfit=shSales.reduce((sum,s)=>(sum+(s.sellPrice-s.mercFee-s.mship-s.costPer)*s.qty),0);
+    const shSoldQty=shSales.reduce((sum,s)=>sum+s.qty,0);
+    const shPnlColor=shProfit>=0?'var(--gn)':'var(--rd)';
+
+    return `<div class="batchbox ${isOpen?'open':''}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          ${badge}<span style="font-weight:700;font-size:15px">${sh.date}</span>
+          ${sh.importDate?`<span style="font-size:12px;color:var(--gn)">📦 ${sh.importDate}</span>`:''}
+          ${sh.memo?`<span class="tag">${sh.memo}</span>`:''}
+        </div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          <span style="font-size:12px;font-weight:600;background:var(--blbg);color:var(--bl);padding:3px 9px;border-radius:20px">${sh.items.length}種類 ${sh.totalQty}個 / ${fy(sh.totalCostJpy)}</span>
+          ${isOpen?`<button class="btn suc" style="font-size:11px;padding:4px 9px;min-height:0" onclick="confirmBatch(${sh.id})">✓ 確定</button>`
+                   :`<button class="btn" style="font-size:11px;padding:4px 9px;min-height:0" onclick="reopenBatch(${sh.id})">再編集</button>`}
+          <button class="btn dan" style="font-size:11px;padding:4px 8px;min-height:0" onclick="delBatch(${sh.id})">削除</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:12px;background:var(--bg2);border-radius:var(--rs);padding:7px 12px;margin-bottom:6px">
+        <span style="color:var(--text2)">仕入れ <strong style="color:var(--rd)">${fy(sh.totalCostJpy)}</strong></span>
+        <span style="color:var(--text2)">売済 <strong>${shSoldQty}/${sh.totalQty}個</strong></span>
+        <span style="color:var(--text2)">利益 <strong style="color:${shPnlColor}">${fy(shProfit)}</strong></span>
+        <span style="color:var(--text2)">現在損益 <strong style="color:${sh.totalCostJpy-shProfit<=0?'var(--gn)':'var(--rd)'}">${fy(sh.totalCostJpy-shProfit)}</strong></span>
+      </div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:4px">
+        為替: ${sh.rate}円/元
+        国際送料: ${sh.intlJpy>0?`${fy(sh.intlJpy)} → 1個 ${fy(sh.intlPer)}円`:'<span style="color:var(--am)">未入力</span>'}
+        関税: ${sh.tariffJpy>0?`${fy(sh.tariffJpy)} → 1個 ${fy(sh.tariffPer||0)}円`:'<span style="color:var(--text3)">なし</span>'}
+      </div>
+      ${intlPnl}
+      <div style="overflow-x:auto"><table style="font-size:12px;width:100%">
+        <thead><tr><th>商品名</th><th style="text-align:center">数量</th><th style="text-align:right">仕入値</th><th style="text-align:right">国内送料</th><th style="text-align:right">国際送料</th><th style="text-align:right;color:var(--am)">関税</th><th style="text-align:right;color:var(--bl)">原価/個</th><th style="text-align:right">合計原価</th><th style="width:50px"></th></tr></thead>
+        <tbody>${irows}</tbody>
+      </table></div>
+    </div>`;
+  }).join('');
+}
+
+function updIntlPrev(shId, tq, rate){
+  const el=g('ipp-'+shId);if(!el)return;
+  const cny=parseFloat(g('iv-'+shId)?.value)||0;
+  const r=rate||shipments.find(s=>s.id===shId)?.rate||21;
+  const jpy=Math.round(cny*r);
+  el.textContent=tq>0?`→ 1個 ${Math.round(jpy/tq).toLocaleString('ja-JP')}円 (元${cny}×${r})`:'';
+}
+function updDomPrev(shId, tq){
+  const el=g('dpp-'+shId);if(!el)return;
+  const v=parseFloat(g('dv-'+shId)?.value)||0;
+  const rate=shipments.find(s=>s.id===shId)?.rate||21;
+  el.textContent=tq>0?`→ 1個 ${Math.round(v*rate/tq).toLocaleString('ja-JP')}円`:'';
+}
+function togIntl(id){const el=g('ip-'+id);if(el)el.style.display=el.style.display==='none'?'block':'none'}
+function togTariff(id){const el=g('tp-'+id);if(el)el.style.display=el.style.display==='none'?'block':'none'}
+function updTariffPrev(shId,tq){
+  const el=g('tpp-'+shId);if(!el)return;
+  const v=parseFloat(g('tv-'+shId)?.value)||0;
+  el.textContent=tq>0?`→ 1個 ${Math.round(v/tq).toLocaleString('ja-JP')}円`:'';
+}
+function applyTariff(id){
+  const sh=shipments.find(s=>s.id===id);if(!sh)return;
+  sh.tariffJpy=parseFloat(g('tv-'+id)?.value)||0;
+  recalc(sh);sv();renderBatches();
+}
+function togDom(id){const el=g('dp-'+id);if(el)el.style.display=el.style.display==='none'?'block':'none'}
+function applyIntl(id){
+  const sh=shipments.find(s=>s.id===id);if(!sh)return;
+  const cny=parseFloat(g('iv-'+id)?.value)||0;
+  sh.intlCny=cny;
+  sh.intlJpy=Math.round(cny*(sh.rate||21));
+  sh.importDate=sh.date;
+  recalc(sh);sv();renderBatches();
+}
+function applyDom(id){
+  const sh=shipments.find(s=>s.id===id);if(!sh)return;
+  sh.domCny=parseFloat(g('dv-'+id)?.value)||0;
+  recalc(sh);sv();renderBatches();
+}
+function confirmBatch(id){
+  const sh=shipments.find(s=>s.id===id);if(!sh)return;
+  if(!sh.items.length){alert('商品が1件もありません。');return}
+  if(!confirm(`この便を確定しますか？\n${sh.items.length}種類・${sh.totalQty}個`))return;
+  sh.status='closed';sv();renderBatches();renderActive();toast('便を確定しました');
+}
+function reopenBatch(id){if(!confirm('再編集しますか？'))return;const sh=shipments.find(s=>s.id===id);if(sh){sh.status='open';sv();renderBatches()}}
+function delBatch(id){if(!confirm('この便を削除しますか？'))return;shipments=shipments.filter(s=>s.id!==id);sv();renderBatches();renderActive()}
+function removeItem(shId,idx){const sh=shipments.find(s=>s.id===shId);if(!sh||!confirm('この商品を削除しますか？'))return;sh.items.splice(idx,1);recalc(sh);sv();renderBatches()}
+function openEditItem(shId,idx){
+  _eiSid=shId;_eiIdx=idx;
+  const sh=shipments.find(s=>s.id===shId);if(!sh)return;
+  const it=sh.items[idx];
+  const opts=products.map(p=>`<option value="${p.id}"${p.id===it.pid?'selected':''}>${p.name}</option>`).join('');
+  sv2('ei-pid','');if(g('ei-pid'))g('ei-pid').innerHTML=`<option value="">-- 選択 --</option>${opts}`;
+  sv2('ei-qty',it.qty);sv2('ei-cny',it.cnyPer);
+  if(g('ei-msg'))g('ei-msg').innerHTML='';
+  openOv('ov-edititem');
+}
+function confirmEditItem(){
+  const sh=shipments.find(s=>s.id===_eiSid);if(!sh)return;
+  const pid=parseInt(gv('ei-pid'))||0,qty=parseInt(gv('ei-qty'))||0,cny=parseFloat(gv('ei-cny'))||0;
+  if(!pid){showMsg('ei-msg','商品を選択してください','err');return}
+  if(!qty){showMsg('ei-msg','数量を入力してください','err');return}
+  if(!cny){showMsg('ei-msg','仕入値を入力してください','err');return}
+  const pn=products.find(p=>p.id===pid)?.name||'';
+  sh.items[_eiIdx]={pid,name:pn,qty,cnyPer:cny,cnyJpy:0,domJpy:0,intlJpy:0,totalCostPer:0};
+  recalc(sh);sv();closeOv('ov-edititem');renderBatches();
+}
+
+// ====================================================
+// CALC
+// ====================================================
+const SPRESET=[
+  {g:'ゆうゆうメルカリ便'},
+  {l:'ゆうパケットmini',p:180},{l:'ゆうパケットポスト',p:215},{l:'ミニレター',p:85},
+  {l:'ゆうパケット1cm',p:110},{l:'ゆうパケット3cm',p:140},
+  {g:'らくらくメルカリ便'},
+  {l:'ネコポス',p:210},{l:'宅急便コンパクト',p:450},
+  {l:'宅急便60',p:750},{l:'宅急便80',p:850},{l:'宅急便100',p:1050},
+  {l:'宅急便120',p:1200},{l:'宅急便140',p:1450},{l:'宅急便160',p:1700},
+  {g:'その他'},{l:'送料無料',p:0},
+];
+function buildSP(wid,iid){
+  const w=g(wid);if(!w)return;
+  let h='';SPRESET.forEach(x=>{
+    if(x.g)h+=`<span class="spg">${x.g}</span>`;
+    else h+=`<button type="button" class="spbtn" data-p="${x.p}" onclick="selSP('${wid}','${iid}',${x.p})">${x.l}<br><strong>¥${x.p}</strong></button>`;
+  });w.innerHTML=h;
+}
+function selSP(wid,iid,p){sv2(iid,p);document.querySelectorAll(`#${wid} .spbtn`).forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.p)===p));calcProfit()}
+function calcProfit(){
+  const cny=parseFloat(gv('c-cny'))||0,rate=parseFloat(gv('c-rate'))||21;
+  const dom=parseFloat(gv('c-dom'))||0,intlpp=parseFloat(gv('c-intlpp'))||0;
+  const other=parseFloat(gv('c-other'))||0,price=parseFloat(gv('c-price'))||0;
+  const mship=parseFloat(gv('c-mship'))||0,fr=(parseFloat(gv('c-fee'))||10)/100;
+  const box=g('c-result');if(!box)return;
+  if(!cny&&!price){box.style.display='none';return}
+  const cj=Math.round(cny*rate),dj=Math.round(dom*rate),tc=cj+dj+Math.round(intlpp)+Math.round(other);
+  const fee=Math.round(price*fr),profit=price-fee-mship-tc;
+  const margin=price>0?((profit/price)*100).toFixed(1):0,roi=tc>0?((profit/tc)*100).toFixed(1):0;
+  const col=profit>=0?'var(--gn)':'var(--rd)';
+  box.style.display='block';
+  box.innerHTML=`<div class="rr"><span class="rl">仕入値（元→円）</span><span>${fy(cj)}</span></div>
+    <div class="rr"><span class="rl">国内送料</span><span>${fy(dj)}</span></div>
+    <div class="rr"><span class="rl">国際送料按分</span><span>${fy(intlpp)}</span></div>
+    <div class="rr"><span class="rl">代行手数料等</span><span>${fy(other)}</span></div>
+    <div class="rr" style="font-weight:700;border-top:0.5px solid var(--border);margin-top:6px;padding-top:8px"><span>総仕入コスト/個</span><span>${fy(tc)}</span></div>
+    <div style="height:6px"></div>
+    <div class="rr"><span class="rl">販売価格</span><span>${fy(price)}</span></div>
+    <div class="rr"><span class="rl">手数料（${(fr*100).toFixed(1)}%）</span><span style="color:var(--rd)">-${fy(fee)}</span></div>
+    <div class="rr"><span class="rl">送料</span><span style="color:var(--rd)">-${fy(mship)}</span></div>
+    <div class="rr tot"><span>純利益</span><span style="font-size:20px;color:${col}">${fy(profit)}</span></div>
+    <div style="display:flex;gap:18px;margin-top:10px;font-size:13px">
+      <span style="color:var(--text2)">利益率 <strong style="color:${col}">${margin}%</strong></span>
+      <span style="color:var(--text2)">ROI <strong style="color:${col}">${roi}%</strong></span>
+    </div>`;
+}
+function renderCalc(){
+  const pg=g('pg-calc');if(!pg||pg.querySelector('#c-cny'))return;// 既にレンダリング済み
+  pg.innerHTML=`<div class="card"><div class="ct">🧮 利益シミュレーター</div>
+    <div class="fr c3">
+      <div class="fg"><label>仕入値（元）</label><input type="number" id="c-cny" placeholder="例: 150" oninput="calcProfit()"></div>
+      <div class="fg"><label>為替レート（円/元）</label><input type="number" id="c-rate" value="${_rate||21}" step="0.1" oninput="calcProfit()"></div>
+      <div class="fg"><label>国内送料（元）</label><input type="number" id="c-dom" value="0" oninput="calcProfit()"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>国際送料按分（円/個）</label><input type="number" id="c-intlpp" value="0" oninput="calcProfit()"><span class="ht">合計国際送料÷仕入数量</span></div>
+      <div class="fg"><label>代行手数料等（円）</label><input type="number" id="c-other" value="0" oninput="calcProfit()"></div>
+    </div>
+    <hr class="dv">
+    <div class="fg" style="margin-bottom:10px">
+      <label>メルカリ送料</label>
+      <div id="c-spw" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:7px"></div>
+      <div style="display:flex;gap:8px;align-items:center"><input type="number" id="c-mship" value="0" style="max-width:110px" oninput="calcProfit()"><span style="font-size:12px;color:var(--text2)">円</span></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>販売価格（円）</label><input type="number" id="c-price" placeholder="例: 3980" oninput="calcProfit()"></div>
+      <div class="fg"><label>手数料率（%）</label><input type="number" id="c-fee" value="10" step="0.1" oninput="calcProfit()"><span class="ht">通常10%</span></div>
+    </div>
+    <div id="c-result" style="display:none"></div>
+  </div>`;
+  buildSP('c-spw','c-mship');
+}
+
+// ====================================================
+// ADD PRODUCT
+// ====================================================
+function renderAdd(){
+  const pg=g('pg-add');if(!pg)return;
+  pg.innerHTML=`<div class="card"><div class="ct">➕ 商品マスタに登録</div>
+    <div class="ib am">ここで登録した商品を「仕入れ」タブで選択します。</div>
+    <div class="fr f1"><div class="fg"><label>商品名</label><input type="text" id="a-name" placeholder="例: シリコンケース iPhone15 黒"></div></div>
+    <div class="fr f1"><div class="fg"><label>読み仮名（ふりがな）<span style="font-size:11px;font-weight:400;color:var(--text3)"> 省略可 — ひらがなやローマ字で検索できるようになります</span></label><input type="text" id="a-yomi" placeholder="例: しりこんけーす あいふぉん じゅうご くろ"></div></div>
+    <div class="fr">
+      <div class="fg"><label>カテゴリ</label>
+        <select id="a-cat"><option>スマホアクセサリー</option><option>ファッション</option><option>美容・コスメ</option><option>おもちゃ・ゲーム</option><option>インテリア・雑貨</option><option>スポーツ・アウトドア</option><option>家電・ガジェット</option><option>その他</option></select>
+      </div>
+      <div class="fg"><label>メルカリ販売価格（円）</label><input type="number" id="a-sell" placeholder="例: 2500"></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>在庫アラート数</label><input type="number" id="a-alert" value="3" style="max-width:80px"></div>
+    </div>
+    <div class="fr f1"><div class="fg"><label>メモ（仕入先URLなど）</label><textarea id="a-memo" placeholder="https://..."></textarea></div></div>
+    <div class="brow"><button class="btn pri" onclick="addProduct()">登録する</button><button class="btn" onclick="clrAdd()">クリア</button></div>
+    <div id="add-msg"></div>
+  </div>
+  <div class="sh">登録済み商品マスタ</div>
+  <div id="master-list"></div>`;
+  renderMaster();
+}
+function addProduct(){
+  const name=gv('a-name').trim(),sell=parseFloat(gv('a-sell'))||0;
+  const alert=parseInt(gv('a-alert'))||3,cat=gv('a-cat'),memo=gv('a-memo').trim();
+  const yomi=gv('a-yomi').trim();
+  if(!name){showMsg('add-msg','商品名を入力してください','err');return}
+  if(!sell){showMsg('add-msg','販売価格を入力してください','err');return}
+  products.push({id:Date.now(),name,cat,sellPrice:sell,mship:0,alert,memo,yomi});
+  sv();showMsg('add-msg','✓ 登録しました！','ok');clrAdd();renderMaster();
+}
+function clrAdd(){
+  ['a-name','a-yomi','a-sell','a-memo'].forEach(id=>sv2(id,''));
+  sv2('a-alert','3');
+}
+function renderMaster(){
+  const wrap=g('master-list');if(!wrap)return;
+  if(!products.length){wrap.innerHTML='<div class="empty">商品マスタが空です。</div>';return}
+  const rows=products.map(p=>`<tr>
+    <td>
+      <div style="font-weight:600">${p.name}</div>
+      ${p.memo?`<span class="tag" style="margin-top:2px">${p.memo.substring(0,40)}</span>`:''}
+      <div style="display:flex;align-items:center;gap:4px;margin-top:4px">
+        <span style="font-size:10px;color:var(--text3);white-space:nowrap">よみ:</span>
+        <input type="text" value="${p.yomi||''}" placeholder="ふりがな（ひらがな）"
+          style="font-size:11px;padding:2px 5px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);width:100%;max-width:200px"
+          onchange="saveYomi(${p.id},this.value)">
+      </div>
+    </td>
+    <td><span class="tag">${p.cat}</span></td>
+    <td>${fy(p.sellPrice)}</td>
+    <td>${p.alert}点</td>
+    <td><button class="btn dan" style="font-size:11px;padding:4px 7px;min-height:0" onclick="delProd(${p.id})">削除</button></td>
+  </tr>`).join('');
+  wrap.innerHTML=`<div class="tw"><table><thead><tr><th>商品名 / よみ</th><th>カテゴリ</th><th>販売価格</th><th>アラート</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+// ====================================================
+// HISTORY
+// ====================================================
+let hv='graph';
+function renderHistory(){
+  const pg=g('pg-history');if(!pg)return;
+  const months=new Set();
+  salesLog.forEach(s=>months.add(s.date.slice(0,7)));
+  shipments.forEach(s=>months.add(s.month));
+  const sorted=[...months].sort((a,b)=>a.localeCompare(b)); // 古い順（グラフ用）
+  const tog=`<div style="display:flex;gap:3px;background:var(--bg2);border-radius:var(--rs);padding:3px;margin-bottom:14px;width:fit-content;flex-wrap:wrap">
+    <button class="dtab ${hv==='graph'?'on':''}" style="flex:none;padding:6px 14px;min-width:0" onclick="hv='graph';renderHistory()">📈 グラフ</button>
+    <button class="dtab ${hv==='summary'?'on':''}" style="flex:none;padding:6px 14px;min-width:0" onclick="hv='summary';renderHistory()">月別サマリー</button>
+    <button class="dtab ${hv==='matrix'?'on':''}" style="flex:none;padding:6px 14px;min-width:0" onclick="hv='matrix';renderHistory()">商品×月別販売数</button>
+  </div>`;
+  if(!sorted.length){pg.innerHTML=tog+'<div class="empty">データがまだありません。</div>';return}
+
+  // --- データ集計（全ビュー共通） ---
+  const monthData=sorted.map(ym=>{
+    const ms=mSales(ym);
+    const msh=mShips(ym).filter(s=>s.status==='closed'||!s.status);
+    const rev=ms.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+    const defLoss=calcDefLoss(defectLog.filter(d=>d.date.startsWith(ym)));
+    const profit=ms.reduce((s,x)=>s+(x.sellPrice-x.mercFee-x.mship-x.costPer)*x.qty,0)-defLoss;
+    const buy=msh.reduce((s,sh)=>s+sh.totalCostJpy,0);
+    const qty=ms.reduce((s,x)=>s+x.qty,0);
+    const[y,m]=ym.split('-');
+    return{ym,y,m:parseInt(m),rev,profit,buy,qty,defLoss};
+  });
+
+  if(hv==='graph'){
+    pg.innerHTML=tog+`
+      <div class="card" style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+          <div class="ct" style="margin:0">売上・利益・仕入れ推移</div>
+          <div style="display:flex;gap:5px">
+            <button class="btn" id="gc-rev" onclick="setGChart('rev')" style="font-size:11px;padding:4px 9px;min-height:0;color:var(--gn);border-color:var(--gn)">売上</button>
+            <button class="btn" id="gc-profit" onclick="setGChart('profit')" style="font-size:11px;padding:4px 9px;min-height:0">利益</button>
+            <button class="btn" id="gc-buy" onclick="setGChart('buy')" style="font-size:11px;padding:4px 9px;min-height:0">仕入れ</button>
+            <button class="btn" id="gc-qty" onclick="setGChart('qty')" style="font-size:11px;padding:4px 9px;min-height:0">販売数</button>
+          </div>
+        </div>
+        <div style="position:relative;overflow-x:auto">
+          <canvas id="main-chart" style="max-width:100%;display:block"></canvas>
+        </div>
+        <div id="chart-tooltip" style="display:none;position:absolute;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--rs);padding:8px 12px;font-size:12px;pointer-events:none;z-index:10;box-shadow:0 2px 8px rgba(0,0,0,.15)"></div>
+      </div>
+      <div class="card">
+        <div class="ct">商品別販売数（上位5品）</div>
+        <canvas id="prod-chart" style="max-width:100%;display:block"></canvas>
+      </div>`;
+    // 少し遅延させてcanvasサイズを確定
+    setTimeout(()=>drawCharts(monthData),30);
+  } else if(hv==='summary'){
+    const cards=[...monthData].reverse().map(d=>`
+      <div style="background:var(--bg);border:0.5px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:10px;cursor:pointer" onclick="curMonth='${d.ym}';sv2('mpick','${d.ym}');updMLabel();switchTab('dashboard')">
+        <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:700">${d.y}年${d.m}月</span><span class="tag">タップで詳細</span></div>
+        <div style="display:flex;gap:14px;margin-top:8px;flex-wrap:wrap;font-size:12px;color:var(--text2)">
+          <span>売上 <strong style="color:var(--gn)">${fy(d.rev)}</strong></span>
+          <span>利益 <strong style="color:${d.profit>=0?'var(--gn)':'var(--rd)'}">${fy(d.profit)}</strong></span>
+          <span>仕入れ <strong>${fy(d.buy)}</strong></span>
+          <span>販売 <strong>${d.qty}点</strong></span>
+          ${d.defLoss>0?`<span>不良品損失 <strong style="color:var(--rd)">⚠ ${fy(d.defLoss)}</strong></span>`:''}
+        </div>
+      </div>`).join('');
+    pg.innerHTML=tog+cards;
+  } else {
+    const revSorted=[...sorted].reverse();
+    const pids=new Set(),pname={};salesLog.forEach(s=>{pids.add(s.pid);pname[s.pid]=s.name});
+    const mat={};salesLog.forEach(s=>{const ym=s.date.slice(0,7);if(!mat[s.pid])mat[s.pid]={};mat[s.pid][ym]=(mat[s.pid][ym]||0)+s.qty});
+    const mt={};revSorted.forEach(ym=>mt[ym]=0);salesLog.forEach(s=>{const ym=s.date.slice(0,7);if(mt[ym]!==undefined)mt[ym]+=s.qty});
+    const ths=revSorted.map(ym=>{const[y,m]=ym.split('-');return`<th style="text-align:center">${parseInt(m)}月<br><span style="font-weight:400;font-size:10px">${y}</span></th>`}).join('');
+    const rows=[...pids].map(pid=>{
+      const tot=Object.values(mat[pid]||{}).reduce((s,v)=>s+v,0);
+      const cells=revSorted.map(ym=>{const v=mat[pid]?.[ym]||0;return`<td style="text-align:center;${v>0?'font-weight:600;color:var(--gn)':'color:var(--text3)'}">${v>0?v+'点':'−'}</td>`}).join('');
+      return`<tr><td style="font-weight:600;white-space:nowrap">${pname[pid]}</td>${cells}<td style="text-align:center;font-weight:700;background:var(--bg2)">${tot}点</td></tr>`;
+    }).join('');
+    const tr=`<tr style="background:var(--bg2)"><td style="font-weight:700">月合計</td>${revSorted.map(ym=>`<td style="text-align:center;font-weight:700">${mt[ym]||0}点</td>`).join('')}<td style="text-align:center;font-weight:700">${salesLog.reduce((s,x)=>s+x.qty,0)}点</td></tr>`;
+    pg.innerHTML=tog+`<div class="tw"><table><thead><tr><th>商品名</th>${ths}<th style="background:var(--bg2)">合計</th></tr></thead><tbody>${rows}${tr}</tbody></table></div><div style="font-size:11px;color:var(--text3);margin-top:6px">※売れた日付で集計</div>`;
+  }
+}
+
+// ====================================================
+// CHART（Canvas描画）
+// ====================================================
+let _gChart='rev'; // 現在表示中の指標
+function setGChart(key){
+  _gChart=key;
+  // ボタンのハイライト切り替え
+  ['rev','profit','buy','qty'].forEach(k=>{
+    const b=g('gc-'+k);if(!b)return;
+    const col=k==='rev'?'var(--gn)':k==='profit'?'var(--bl)':k==='buy'?'var(--am)':'var(--rd)';
+    if(k===key){b.style.color=col;b.style.borderColor=col;b.style.background=''}
+    else{b.style.color='var(--text2)';b.style.borderColor='var(--border2)';b.style.background=''}
+  });
+  // キャンバスだけ再描画
+  const months=new Set();
+  salesLog.forEach(s=>months.add(s.date.slice(0,7)));
+  shipments.forEach(s=>months.add(s.month));
+  const sorted=[...months].sort((a,b)=>a.localeCompare(b));
+  const monthData=sorted.map(ym=>{
+    const ms=mSales(ym),msh=mShips(ym).filter(s=>s.status==='closed'||!s.status);
+    const rev=ms.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+    const profit=ms.reduce((s,x)=>s+(x.sellPrice-x.mercFee-x.mship-x.costPer)*x.qty,0);
+    const buy=msh.reduce((s,sh)=>s+sh.totalCostJpy,0);
+    const qty=ms.reduce((s,x)=>s+x.qty,0);
+    const[y,m]=ym.split('-');
+    return{ym,y,m:parseInt(m),rev,profit,buy,qty};
+  });
+  drawMainChart(monthData);
+}
+
+function drawCharts(monthData){
+  drawMainChart(monthData);
+  drawProdChart();
+  // ボタン初期ハイライト
+  setGChart(_gChart);
+}
+
+function drawMainChart(monthData){
+  const canvas=g('main-chart');if(!canvas)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.clientWidth||600;
+  const H=Math.min(260, Math.max(180, W*0.38));
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const textColor=isDark?'#999':'#888';
+  const gridColor=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.06)';
+  const bgColor=isDark?'#1c1c1a':'#fff';
+
+  const PAD={top:16,right:16,bottom:36,left:62};
+  const cW=W-PAD.left-PAD.right;
+  const cH=H-PAD.top-PAD.bottom;
+
+  const key=_gChart;
+  const isQty=key==='qty';
+  const col=key==='rev'?'#0a7a5f':key==='profit'?'#1558a0':key==='buy'?'#7a4800':'#993c1d';
+  const colLight=key==='rev'?'rgba(10,122,95,0.15)':key==='profit'?'rgba(21,88,160,0.12)':key==='buy'?'rgba(122,72,0,0.12)':'rgba(153,60,29,0.12)';
+  const label=key==='rev'?'売上':key==='profit'?'利益':key==='buy'?'仕入れ':'販売数（点）';
+
+  const vals=monthData.map(d=>d[key]);
+  const maxV=Math.max(...vals,1);
+  const minV=Math.min(...vals,0);
+  const range=maxV-minV||1;
+
+  // グリッド線（5本）
+  ctx.strokeStyle=gridColor;ctx.lineWidth=0.5;
+  for(let i=0;i<=4;i++){
+    const y=PAD.top+cH*(1-i/4);
+    ctx.beginPath();ctx.moveTo(PAD.left,y);ctx.lineTo(PAD.left+cW,y);ctx.stroke();
+    const v=minV+range*(i/4);
+    ctx.fillStyle=textColor;ctx.font=`${Math.max(9,Math.min(11,W/60))}px -apple-system,sans-serif`;
+    ctx.textAlign='right';
+    ctx.fillText(isQty?Math.round(v)+'点':toK(v),PAD.left-5,y+4);
+  }
+
+  const n=monthData.length;
+  if(n===0)return;
+  const bw=Math.max(8,Math.min(40,cW/n-6));
+  const step=cW/n;
+
+  // 折れ線の下塗り
+  ctx.beginPath();
+  monthData.forEach((d,i)=>{
+    const x=PAD.left+step*i+step/2;
+    const y=PAD.top+cH*(1-(d[key]-minV)/range);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });
+  ctx.lineTo(PAD.left+step*(n-1)+step/2,PAD.top+cH);
+  ctx.lineTo(PAD.left+step/2,PAD.top+cH);
+  ctx.closePath();
+  ctx.fillStyle=colLight;ctx.fill();
+
+  // 棒グラフ
+  monthData.forEach((d,i)=>{
+    const x=PAD.left+step*i+step/2-bw/2;
+    const v=d[key];
+    const barH=cH*Math.abs(v)/range;
+    const y=v>=0?PAD.top+cH*(1-Math.max(v,0)/range):PAD.top+cH*(1-Math.max(-minV,0)/range);
+    ctx.fillStyle=v>=0?col:'#993c1d';
+    ctx.globalAlpha=0.7;
+    ctx.beginPath();
+    const r2=Math.min(4,bw/2);
+    ctx.roundRect(x,y,bw,barH,v>=0?[r2,r2,0,0]:[0,0,r2,r2]);
+    ctx.fill();
+    ctx.globalAlpha=1;
+  });
+
+  // 折れ線
+  ctx.beginPath();ctx.strokeStyle=col;ctx.lineWidth=2;ctx.lineJoin='round';
+  monthData.forEach((d,i)=>{
+    const x=PAD.left+step*i+step/2;
+    const y=PAD.top+cH*(1-(d[key]-minV)/range);
+    i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+  });ctx.stroke();
+
+  // ドット
+  monthData.forEach((d,i)=>{
+    const x=PAD.left+step*i+step/2;
+    const y=PAD.top+cH*(1-(d[key]-minV)/range);
+    ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);
+    ctx.fillStyle=col;ctx.fill();
+    ctx.strokeStyle=bgColor;ctx.lineWidth=1.5;ctx.stroke();
+  });
+
+  // X軸ラベル
+  ctx.fillStyle=textColor;
+  const fsize=Math.max(9,Math.min(11,W/60));
+  ctx.font=`${fsize}px -apple-system,sans-serif`;
+  ctx.textAlign='center';
+  monthData.forEach((d,i)=>{
+    if(n<=12||i%Math.ceil(n/12)===0){
+      const x=PAD.left+step*i+step/2;
+      ctx.fillText(`${d.m}月`,x,PAD.top+cH+14);
+      if(d.m===1||i===0)ctx.fillText(d.y,x,PAD.top+cH+26);
+    }
+  });
+
+  // ホバーイベント（1回だけ登録）
+  if(!canvas._hoverBound){
+    canvas._hoverBound=true;
+    canvas.addEventListener('mousemove',e=>{
+      const rect=canvas.getBoundingClientRect();
+      const mx=e.clientX-rect.left;
+      const idx=Math.floor((mx-PAD.left)/step);
+      const tip=g('chart-tooltip');
+      if(!tip)return;
+      if(idx<0||idx>=monthData.length){tip.style.display='none';return}
+      const d=monthData[idx];
+      const v=d[_gChart];
+      const isQ=_gChart==='qty';
+      tip.style.display='block';
+      tip.style.left=Math.min(e.clientX-canvas.getBoundingClientRect().left+10,W-120)+'px';
+      tip.style.top=(PAD.top)+'px';
+      tip.innerHTML=`<strong>${d.y}年${d.m}月</strong><br>${label}: <strong>${isQ?v+'点':fy(v)}</strong>`;
+    });
+    canvas.addEventListener('mouseleave',()=>{const t=g('chart-tooltip');if(t)t.style.display='none'});
+  }
+}
+
+function drawProdChart(){
+  const canvas=g('prod-chart');if(!canvas)return;
+  // 商品別累計販売数（上位5）
+  const byP={};salesLog.forEach(s=>{if(!byP[s.pid])byP[s.pid]={name:s.name,qty:0};byP[s.pid].qty+=s.qty});
+  const top5=Object.values(byP).sort((a,b)=>b.qty-a.qty).slice(0,5);
+  if(!top5.length){canvas.style.display='none';return}
+
+  const dpr=window.devicePixelRatio||1;
+  const W=canvas.parentElement.clientWidth||600;
+  const barH=36,gap=10,PAD={top:10,right:100,bottom:16,left:10};
+  const H=top5.length*(barH+gap)+PAD.top+PAD.bottom;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  canvas.style.width=W+'px';canvas.style.height=H+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.scale(dpr,dpr);
+
+  const isDark=window.matchMedia('(prefers-color-scheme:dark)').matches;
+  const textColor=isDark?'#ccc':'#333';
+  const text3=isDark?'#555':'#bbb';
+
+  const maxQ=top5[0].qty||1;
+  const cW=W-PAD.left-PAD.right;
+  const COLORS=['#0a7a5f','#1558a0','#7a4800','#993c1d','#555'];
+
+  top5.forEach((p,i)=>{
+    const y=PAD.top+i*(barH+gap);
+    const bw=Math.max(4,cW*(p.qty/maxQ));
+
+    // バー背景
+    ctx.fillStyle=isDark?'rgba(255,255,255,0.05)':'rgba(0,0,0,0.04)';
+    ctx.beginPath();ctx.roundRect(PAD.left,y+16,cW,barH-16,[4]);ctx.fill();
+
+    // バー本体
+    ctx.fillStyle=COLORS[i%COLORS.length];
+    ctx.globalAlpha=0.85;
+    ctx.beginPath();ctx.roundRect(PAD.left,y+16,bw,barH-16,[4]);ctx.fill();
+    ctx.globalAlpha=1;
+
+    // 商品名
+    ctx.fillStyle=textColor;
+    ctx.font=`600 ${Math.max(11,Math.min(13,W/50))}px -apple-system,sans-serif`;
+    ctx.textAlign='left';
+    const maxNameW=cW-50;
+    let name=p.name;
+    while(ctx.measureText(name).width>maxNameW&&name.length>5)name=name.slice(0,-1);
+    if(name!==p.name)name+='…';
+    ctx.fillText(name,PAD.left,y+13);
+
+    // 数量
+    ctx.fillStyle=COLORS[i%COLORS.length];
+    ctx.font=`700 ${Math.max(11,Math.min(13,W/50))}px -apple-system,sans-serif`;
+    ctx.textAlign='right';
+    ctx.fillText(p.qty+'点',W-PAD.right+90,y+16+((barH-16)/2)+5);
+  });
+}
+
+function toK(n){
+  const a=Math.abs(n);
+  if(a>=10000)return(n/10000).toFixed(1)+'万';
+  if(a>=1000)return(n/1000).toFixed(1)+'k';
+  return Math.round(n).toString();
+}
+
+// ====================================================
+// SYNC / EXPORT
+// ====================================================
+function showSyncTab(t){
+  g('s-exp').style.display=t==='exp'?'block':'none';
+  g('s-imp').style.display=t==='imp'?'block':'none';
+  g('st-exp').classList.toggle('on',t==='exp');
+  g('st-imp').classList.toggle('on',t==='imp');
+}
+function exportJSON(){
+  const d=JSON.stringify({v:3,ts:Date.now(),products,shipments,salesLog,defectLog,fixedCosts},null,2);
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([d],{type:'application/json'}));
+  a.download='mercari_backup_'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'.json';a.click();
+}
+function handleImport(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);if(!data.products)throw 0;
+      _impData=data;
+      const prev=g('imp-prev');prev.style.display='block';
+      prev.innerHTML=`商品: ${data.products.length}件 / 仕入れ: ${data.shipments?.length||0}件 / 売上: ${data.salesLog?.length||0}件<br>日時: ${new Date(data.ts).toLocaleString('ja-JP')}
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn pri" onclick="doImport('merge')">追加（合算）</button>
+          <button class="btn dan" onclick="doImport('replace')">上書き</button>
+        </div>`;
+    }catch(e){alert('読み込み失敗')}
+  };reader.readAsText(file);
+}
+function doImport(mode){
+  if(!_impData)return;
+  if(mode==='replace'){if(!confirm('現在のデータを全て置き換えますか？'))return;products=_impData.products||[];shipments=_impData.shipments||[];salesLog=_impData.salesLog||[];defectLog=_impData.defectLog||[];fixedCosts=_impData.fixedCosts||[]}
+  else{
+    const ep=new Set(products.map(p=>p.id)),es=new Set(shipments.map(s=>s.id)),et=new Set(salesLog.map(s=>s.ts));
+    (_impData.products||[]).forEach(p=>{if(!ep.has(p.id))products.push(p)});
+    (_impData.shipments||[]).forEach(s=>{if(!es.has(s.id))shipments.push(s)});
+    (_impData.salesLog||[]).forEach(s=>{if(!et.has(s.ts))salesLog.push(s)});
+    (_impData.defectLog||[]).forEach(d=>{if(!defectLog.find(x=>x.ts===d.ts))defectLog.push(d)});
+    (_impData.fixedCosts||[]).forEach(f=>{if(!fixedCosts.find(x=>x.id===f.id))fixedCosts.push(f)});
+  }
+  sv();closeOv('ov-sync');renderActive();alert(`✓ ${mode==='replace'?'置き換え':'追加'}完了`);
+}
+
+// ====================================================
+// BACKUP
+// ====================================================
+function backupExport(){
+  const ts=Date.now();
+  const d=JSON.stringify({v:3,ts,products,shipments,salesLog,defectLog,fixedCosts},null,2);
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([d],{type:'application/json'}));
+  a.download='mercari_backup_'+new Date(ts).toISOString().slice(0,10).replace(/-/g,'')+'.json';a.click();
+  localStorage.setItem('mbu',ts);
+  updateBkBtn();g('bk-banner').style.display='none';
+  toast('✓ バックアップを保存しました');
+  setTimeout(()=>openBkModal(),400);
+}
+function backupImportPreview(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);if(!data.products)throw 0;
+      _impData=data;
+      const prev=g('bk-imp-prev');prev.style.display='block';
+      const dt=data.ts?new Date(data.ts).toLocaleString('ja-JP'):'不明';
+      prev.innerHTML=`<strong>ファイル内容</strong><br>商品: ${data.products.length}件 / 仕入れ: ${data.shipments?.length||0}件 / 売上: ${data.salesLog?.length||0}件<br>保存日時: ${dt}
+        <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+          <button class="btn dan" onclick="doBkImport('replace')">⚠️ 上書きで復元</button>
+          <button class="btn" onclick="doBkImport('merge')">追加（合算）</button>
+        </div>`;
+    }catch(err){alert('読み込み失敗：正しいバックアップファイルを選択してください')}
+  };reader.readAsText(file);
+}
+function doBkImport(mode){
+  if(!_impData)return;
+  if(mode==='replace'){if(!confirm('現在の全データを上書きします。元に戻せません。よろしいですか？'))return;
+    products=_impData.products||[];shipments=_impData.shipments||[];salesLog=_impData.salesLog||[];defectLog=_impData.defectLog||[];fixedCosts=_impData.fixedCosts||[];
+  }else{
+    const ep=new Set(products.map(p=>p.id)),es=new Set(shipments.map(s=>s.id)),et=new Set(salesLog.map(s=>s.ts));
+    (_impData.products||[]).forEach(p=>{if(!ep.has(p.id))products.push(p)});
+    (_impData.shipments||[]).forEach(s=>{if(!es.has(s.id))shipments.push(s)});
+    (_impData.salesLog||[]).forEach(s=>{if(!et.has(s.ts))salesLog.push(s)});
+    (_impData.defectLog||[]).forEach(d=>{if(!defectLog.find(x=>x.ts===d.ts))defectLog.push(d)});
+    (_impData.fixedCosts||[]).forEach(f=>{if(!fixedCosts.find(x=>x.id===f.id))fixedCosts.push(f)});
+  }
+  sv();closeOv('ov-backup');renderActive();
+  toast(`✓ ${mode==='replace'?'復元':'追加'}完了しました`);
+}
+function openBkModal(){
+  const ts=parseInt(localStorage.getItem('mbu')||0);
+  const el=g('bk-last');if(!el)return;
+  if(!ts){el.style.background='var(--rdbg)';el.style.color='var(--rd)';el.innerHTML='⚠️ まだバックアップが保存されていません。'}
+  else{
+    const days=Math.floor((Date.now()-ts)/86400000);
+    const col=days>=7?'var(--rd)':days>=3?'var(--am)':'var(--gn)';
+    el.style.background='var(--bg2)';el.style.color=col;
+    el.innerHTML=`最終バックアップ: <strong>${new Date(ts).toLocaleString('ja-JP')}</strong>（${days===0?'今日':days+'日前'}）`;
+  }
+  g('bk-imp-prev').style.display='none';
+  const fi=g('bk-imp-f');if(fi)fi.value='';
+  openOv('ov-backup');
+}
+function updateBkBtn(){
+  const ts=parseInt(localStorage.getItem('mbu')||0);
+  const btn=g('bk-btn');if(!btn)return;
+  const days=ts?Math.floor((Date.now()-ts)/86400000):999;
+  btn.style.borderColor=days>=7?'var(--rd)':days>=3?'var(--am)':'';
+  btn.style.color=days>=7?'var(--rd)':days>=3?'var(--am)':'';
+}
+function checkBkWarning(){
+  const ts=parseInt(localStorage.getItem('mbu')||0);
+  const days=ts?Math.floor((Date.now()-ts)/86400000):999;
+  const banner=g('bk-banner');if(!banner)return;
+  if(days>=7){
+    const msg=g('bk-banner-msg');
+    if(msg)msg.textContent=ts?`⚠️ 最後のバックアップから ${days} 日経過しています。データ消失リスクがあります。`:'⚠️ まだバックアップが保存されていません。データ消失リスクがあります。';
+    banner.style.display='flex';
+  }
+}
+function exportCSV(){
+  let csv='\uFEFF月,日付,商品名,販売価格,メルカリ手数料,送料,原価/個,数量,利益\n';
+  [...salesLog].sort((a,b)=>a.date.localeCompare(b.date)).forEach(s=>{
+    const p=(s.sellPrice-s.mercFee-s.mship-s.costPer)*s.qty;
+    csv+=`"${s.date.slice(0,7)}","${s.date}","${s.name}",${s.sellPrice},${s.mercFee},${s.mship},${s.costPer},${s.qty},${Math.round(p)}\n`;
+  });
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download='mercari_'+new Date().toISOString().slice(0,10).replace(/-/g,'')+'.csv';a.click();
+}
+
+// ====================================================
+// TAX
+// ====================================================
+function setPlatform(p){
+  _sellPlatform=p;
+  sv2('sell-fee',p==='mercari'?10:5);
+  g('plt-merc')?.classList.toggle('sel',p==='mercari');
+  g('plt-furima')?.classList.toggle('sel',p==='furima');
+  if(_setMode)updateSetHint();
+}
+function toggleSetMode(){
+  _setMode=!_setMode;
+  const btn=g('set-toggle'),fields=g('set-fields'),hint=g('set-toggle-hint');
+  if(_setMode){
+    btn?.classList.add('sel');
+    if(fields)fields.style.display='block';
+    if(g('qty-normal-area'))g('qty-normal-area').style.display='none';
+    if(g('price-normal-area'))g('price-normal-area').style.display='none';
+    const sq=parseInt(g('sell-setqty')?.value)||2;
+    if(hint)hint.textContent=`在庫を${sq}個消費します`;
+    if(g('sell-qty'))g('sell-qty').value=sq;
+    setTimeout(()=>g('sell-setqty')?.focus(),50);
+  } else {
+    btn?.classList.remove('sel');
+    if(fields)fields.style.display='none';
+    if(g('qty-normal-area'))g('qty-normal-area').style.display='';
+    if(g('price-normal-area'))g('price-normal-area').style.display='';
+    if(hint)hint.textContent='';
+    if(g('sell-qty')){g('sell-qty').value='1';g('sell-qty').readOnly=false;}
+    if(g('set-calc-hint'))g('set-calc-hint').textContent='';
+  }
+}
+function onSetQtyChange(){
+  const sq=parseInt(g('sell-setqty')?.value)||2;
+  if(g('sell-qty'))g('sell-qty').value=sq;
+  const hint=g('set-toggle-hint');
+  if(hint)hint.textContent=`在庫を${sq}個消費します`;
+  updateSetHint();
+}
+function updateSetHint(){
+  const p=products.find(x=>x.id===_spid);if(!p)return;
+  const sp=parseInt(g('sell-setprice')?.value)||0;
+  const sq=parseInt(g('sell-setqty')?.value)||2;
+  const hint=g('set-calc-hint');if(!hint)return;
+  if(!sp){hint.textContent='';return}
+  const fr=(parseFloat(gv('sell-fee'))||10)/100;
+  const fee=Math.round(sp*fr);
+  const shipInput=parseInt(g('sell-setship')?.value);
+  const ship=isNaN(shipInput)||g('sell-setship')?.value===''?p.mship:shipInput;
+  const profit=sp-fee-ship-getLatestCost(_spid)*sq;
+  hint.textContent=`手数料 ${fy(fee)} / 純利益目安 ${fy(profit)}`;
+  hint.style.color=profit>=0?'var(--gn)':'var(--rd)';
+}
+
+async function fetchHistoricalRate(date){
+  if(_rateCache[date]!==undefined)return _rateCache[date];
+  try{
+    const r=await fetch(`https://api.frankfurter.dev/v1/${date}?from=CNY&to=JPY`);
+    const d=await r.json();
+    const rate=d.rates?.JPY?Math.round(d.rates.JPY*10)/10:null;
+    _rateCache[date]=rate;
+    if(d.date&&d.date!==date)_rateCache[d.date]=rate;
+    return rate;
+  }catch(e){_rateCache[date]=null;return null;}
+}
+
+function renderTax(){
+  const pg=g('pg-tax');if(!pg)return;
+  const years=[...new Set([
+    ...salesLog.map(s=>s.date.slice(0,4)),
+    ...shipments.filter(s=>s.status==='closed'||!s.status).map(s=>s.date.slice(0,4)),
+    new Date().getFullYear().toString()
+  ])].sort().reverse();
+  if(!years.includes(_taxYear))_taxYear=years[0]||new Date().getFullYear().toString();
+
+  const ySales=salesLog.filter(s=>s.date.startsWith(_taxYear));
+  const mercSales=ySales.filter(s=>s.platform?s.platform==='mercari':s.feeRate!==5);
+  const furimaSales=ySales.filter(s=>s.platform==='furima'||(!s.platform&&s.feeRate===5));
+  const totalRev=ySales.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+  const mercRev=mercSales.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+  const furimaRev=furimaSales.reduce((s,x)=>s+x.sellPrice*x.qty,0);
+  const totalFee=ySales.reduce((s,x)=>s+x.mercFee*x.qty,0);
+  const mercFee=mercSales.reduce((s,x)=>s+x.mercFee*x.qty,0);
+  const furimaFee=furimaSales.reduce((s,x)=>s+x.mercFee*x.qty,0);
+  const totalShip=ySales.reduce((s,x)=>s+(x.mship||0)*x.qty,0);
+  const totalCogs=ySales.reduce((s,x)=>s+x.costPer*x.qty,0);
+  const profit=totalRev-totalFee-totalShip-totalCogs;
+  const yShips=shipments.filter(sh=>(sh.status==='closed'||!sh.status)&&sh.date.startsWith(_taxYear)&&!sh.isInitial);
+  const totalTariff=yShips.reduce((s,sh)=>s+(sh.tariffJpy||0),0);
+
+  pg.innerHTML=`
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+    <div style="font-size:15px;font-weight:700">🧾 確定申告サマリー</div>
+    <select id="tax-year" style="width:auto;padding:6px 28px 6px 10px" onchange="_taxYear=this.value;renderTax()">
+      ${years.map(y=>`<option value="${y}"${y===_taxYear?' selected':''}>${y}年</option>`).join('')}
+    </select>
+    <button class="btn" style="font-size:12px;padding:5px 10px" onclick="exportTaxCSV()">📥 CSV出力</button>
+    <button class="btn" style="font-size:12px;padding:5px 10px" onclick="_rateCache={};renderTax()">🔄 レート再取得</button>
+  </div>
+
+  <div class="sh">売上・経費サマリー</div>
+  <div class="mets">
+    <div class="met"><div class="ml">年間売上合計</div><div class="mv g">${fy(totalRev)}</div></div>
+    <div class="met"><div class="ml">メルカリ売上</div><div class="mv g" style="font-size:15px">${fy(mercRev)}</div></div>
+    <div class="met"><div class="ml">Yahooフリマ売上</div><div class="mv g" style="font-size:15px">${fy(furimaRev)}</div></div>
+    <div class="met"><div class="ml">メルカリ手数料（10%）</div><div class="mv r">${fy(mercFee)}</div></div>
+    <div class="met"><div class="ml">Yahooフリマ手数料（5%）</div><div class="mv r">${fy(furimaFee)}</div></div>
+    <div class="met"><div class="ml">国内送料合計</div><div class="mv r">${fy(totalShip)}</div></div>
+    <div class="met"><div class="ml">仕入れ原価合計</div><div class="mv r">${fy(totalCogs)}</div></div>
+    <div class="met" style="cursor:pointer;user-select:none" onclick="togTariffDetail()" title="クリックで内訳表示">
+      <div class="ml" style="display:flex;align-items:center;gap:4px">関税合計 <span id="tariff-arr" style="font-size:10px;color:var(--text3)">▶</span></div>
+      <div class="mv ${totalTariff>0?'r':'a'}">${totalTariff>0?fy(totalTariff):'なし'}</div>
+    </div>
+    <div class="met"><div class="ml">年間利益（概算）</div><div class="mv ${profit>=0?'g':'r'}">${fy(profit)}</div></div>
+  </div>
+  <div id="tariff-detail" style="display:none;margin-bottom:4px">${taxTariffTable(yShips)}</div>
+
+  <div class="sh" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+    <span>棚卸資産（期末在庫評価）<span style="font-size:10px;font-weight:400;color:var(--text3);margin-left:6px">仕入日レート使用</span></span>
+    <button class="btn" style="font-size:12px;padding:5px 10px" onclick="exportInventoryCSV()">📥 棚卸表CSV</button>
+  </div>
+  <div id="tax-inv"><div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">⏳ 為替レート取得中… <span id="tax-rate-p"></span></div></div>
+
+  <div class="sh" style="margin-top:4px">月別売上内訳</div>
+  ${taxMonthlyTable(ySales)}`;
+
+  _taxLoadGen++;loadTaxInventory(_taxLoadGen);
+}
+
+function togTariffDetail(){
+  const el=g('tariff-detail'),arr=g('tariff-arr');if(!el)return;
+  const open=el.style.display==='none';
+  el.style.display=open?'':'none';
+  if(arr)arr.textContent=open?'▼':'▶';
+}
+
+function taxTariffTable(yShips){
+  const rows=yShips.filter(sh=>(sh.tariffJpy||0)>0).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!rows.length)return`<div style="padding:12px 0;font-size:13px;color:var(--text3)">この年の関税データはありません</div>`;
+  const total=rows.reduce((s,sh)=>s+(sh.tariffJpy||0),0);
+  return`<div class="tw"><table>
+    <thead><tr><th>仕入れ日</th><th>便メモ</th><th>関税額</th></tr></thead>
+    <tbody>
+      ${rows.map(sh=>`<tr>
+        <td>${sh.date}</td>
+        <td style="color:var(--text2)">${sh.memo||'-'}</td>
+        <td style="font-weight:700;color:var(--am)">${fy(sh.tariffJpy)}</td>
+      </tr>`).join('')}
+      <tr style="font-weight:700;background:var(--bg2)">
+        <td colspan="2">合計</td>
+        <td style="color:var(--am)">${fy(total)}</td>
+      </tr>
+    </tbody>
+  </table></div>`;
+}
+
+function taxMonthlyTable(ySales){
+  const months={};
+  ySales.forEach(s=>{
+    const m=s.date.slice(0,7);
+    if(!months[m])months[m]={rev:0,fee:0,ship:0,cogs:0,qty:0};
+    months[m].rev+=s.sellPrice*s.qty;months[m].fee+=s.mercFee*s.qty;
+    months[m].ship+=(s.mship||0)*s.qty;months[m].cogs+=s.costPer*s.qty;months[m].qty+=s.qty;
+  });
+  const rows=Object.entries(months).sort((a,b)=>a[0].localeCompare(b[0]));
+  if(!rows.length)return '<div class="empty" style="padding:20px 0">この年の売上データがありません</div>';
+  const tot=rows.reduce((acc,[,d])=>{acc.rev+=d.rev;acc.fee+=d.fee;acc.ship+=d.ship;acc.cogs+=d.cogs;acc.qty+=d.qty;return acc},{rev:0,fee:0,ship:0,cogs:0,qty:0});
+  const profitTot=tot.rev-tot.fee-tot.ship-tot.cogs;
+  return`<div class="tw"><table>
+    <thead><tr><th>月</th><th>点数</th><th>売上</th><th>手数料</th><th>国内送料</th><th>仕入原価</th><th>利益</th></tr></thead>
+    <tbody>
+      ${rows.map(([m,d])=>{const pr=d.rev-d.fee-d.ship-d.cogs;return`<tr>
+        <td style="font-weight:600">${parseInt(m.slice(5))}月</td>
+        <td>${d.qty}点</td><td class="pp">${fy(d.rev)}</td>
+        <td style="color:var(--rd)">-${fy(d.fee)}</td>
+        <td style="color:var(--rd)">-${fy(d.ship)}</td>
+        <td style="color:var(--rd)">-${fy(d.cogs)}</td>
+        <td class="${pr>=0?'pp':'pn'}">${fy(pr)}</td>
+      </tr>`}).join('')}
+      <tr style="font-weight:700;background:var(--bg2)">
+        <td>合計</td><td>${tot.qty}点</td><td class="pp">${fy(tot.rev)}</td>
+        <td style="color:var(--rd)">-${fy(tot.fee)}</td><td style="color:var(--rd)">-${fy(tot.ship)}</td>
+        <td style="color:var(--rd)">-${fy(tot.cogs)}</td>
+        <td class="${profitTot>=0?'pp':'pn'}">${fy(profitTot)}</td>
+      </tr>
+    </tbody>
+  </table></div>`;
+}
+
+async function loadTaxInventory(gen){
+  const allDates=[...new Set(shipments.filter(sh=>sh.status==='closed'||!sh.status).map(sh=>sh.date))];
+  let done=0;
+  await Promise.all(allDates.map(async date=>{
+    await fetchHistoricalRate(date);
+    if(gen!==_taxLoadGen)return;
+    done++;
+    const el=g('tax-rate-p');if(el)el.textContent=`${done}/${allDates.length}件`;
+  }));
+  if(gen!==_taxLoadGen||!g('tax-inv'))return;
+
+  const rows=products.map(p=>{
+    const pShips=shipments.filter(sh=>sh.items.some(it=>it.pid===p.id)&&(sh.status==='closed'||!sh.status)).sort((a,b)=>a.date.localeCompare(b.date));
+    if(!pShips.length)return null;
+    const stock=getStock(p.id);let totalQty=0;
+    const history=pShips.map(sh=>{
+      const it=sh.items.find(x=>x.pid===p.id);if(!it)return null;
+      totalQty+=it.qty;
+      const rate=_rateCache[sh.date]!=null?_rateCache[sh.date]:sh.rate;
+      return{date:sh.date,qty:it.qty,cnyPer:it.cnyPer,rate,evalJpy:Math.round(it.cnyPer*rate)};
+    }).filter(Boolean);
+    const last=history[history.length-1];
+    const evalPerUnit=last?last.evalJpy:0;
+    return{name:p.name,stock,totalQty,history,evalPerUnit,totalEval:Math.max(stock,0)*evalPerUnit,last};
+  }).filter(Boolean);
+
+  const sec=g('tax-inv');if(!sec)return;
+  if(!rows.length){sec.innerHTML='<div class="empty">商品データがありません</div>';return;}
+  const totalEval=rows.reduce((s,r)=>s+r.totalEval,0);
+
+  sec.innerHTML=`
+  <div class="met" style="display:inline-flex;flex-direction:column;padding:12px 16px;margin-bottom:10px">
+    <div class="ml">棚卸資産合計</div><div class="mv b">${fy(totalEval)}</div>
+  </div>
+  <div class="tw"><table>
+    <thead><tr><th>商品名</th><th>残り在庫</th><th>仕入れ累計</th><th>最終仕入れ日</th><th>原価/個（元）</th><th>為替レート</th><th>評価額/個（円）</th><th>評価額合計</th></tr></thead>
+    <tbody>
+      ${rows.map(r=>`<tr>
+        <td style="font-weight:600">${r.name}</td>
+        <td>${r.stock<=0?'<span class="bdg no">0点</span>':r.stock+'点'}</td>
+        <td>${r.totalQty}点</td>
+        <td>${r.last?r.last.date:'-'}</td>
+        <td>${r.last?r.last.cnyPer+'元':'-'}</td>
+        <td>${r.last?r.last.rate+'円/元':'-'}</td>
+        <td>${r.evalPerUnit>0?fy(r.evalPerUnit):'-'}</td>
+        <td style="font-weight:700;color:var(--bl)">${r.stock>0&&r.totalEval>0?fy(r.totalEval):'<span style="color:var(--text3)">'+(r.stock<=0?'在庫なし':'-')+'</span>'}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table></div>
+  <details style="margin-top:10px">
+    <summary style="cursor:pointer;font-size:12px;color:var(--text2);padding:6px 0;user-select:none">▶ 仕入れ明細（全レコード）</summary>
+    <div class="tw" style="margin-top:8px"><table>
+      <thead><tr><th>仕入れ日</th><th>商品名</th><th>仕入れ数</th><th>原価/個（元）</th><th>為替レート</th><th>評価額/個（円）</th></tr></thead>
+      <tbody>
+        ${rows.flatMap(r=>r.history.map(h=>`<tr>
+          <td>${h.date}</td><td>${r.name}</td><td>${h.qty}点</td>
+          <td>${h.cnyPer}元</td>
+          <td>${h.rate!=null?h.rate+'円/元':'<span style="color:var(--rd)">取得失敗</span>'}</td>
+          <td>${fy(h.evalJpy)}</td>
+        </tr>`)).join('')}
+      </tbody>
+    </table></div>
+  </details>`;
+}
+
+function exportInventoryCSV(){
+  const rows=products.map(p=>{
+    const pShips=shipments.filter(sh=>sh.items.some(it=>it.pid===p.id)&&(sh.status==='closed'||!sh.status)).sort((a,b)=>a.date.localeCompare(b.date));
+    if(!pShips.length)return null;
+    const stock=getStock(p.id);
+    const history=pShips.map(sh=>{
+      const it=sh.items.find(x=>x.pid===p.id);if(!it)return null;
+      const rate=_rateCache[sh.date]!=null?_rateCache[sh.date]:sh.rate;
+      return{date:sh.date,qty:it.qty,cnyPer:it.cnyPer,rate,evalJpy:Math.round(it.cnyPer*(rate||0))};
+    }).filter(Boolean);
+    const last=history[history.length-1];
+    const evalPerUnit=last?last.evalJpy:0;
+    return{name:p.name,cat:p.cat,stock,history,evalPerUnit,totalEval:Math.max(stock,0)*evalPerUnit,last};
+  }).filter(Boolean);
+
+  const today=new Date().toISOString().slice(0,10);
+  let csv='﻿棚卸表,'+today+'\n\n';
+  csv+='商品名,カテゴリ,現在庫（点）,最終仕入れ日,仕入原価/個（元）,為替レート（円/元）,評価額/個（円）,評価額合計（円）\n';
+  rows.forEach(r=>{
+    csv+=`"${r.name}","${r.cat}",${r.stock},${r.last?r.last.date:'-'},${r.last?r.last.cnyPer:'-'},${r.last?r.last.rate:'-'},${r.evalPerUnit},${r.totalEval}\n`;
+  });
+  const total=rows.reduce((s,r)=>s+r.totalEval,0);
+  csv+=`\n合計,,,,,,, ${total}\n`;
+
+  csv+='\n\n【仕入れ明細】\n仕入れ日,商品名,仕入れ数（点）,原価/個（元）,為替レート（円/元）,評価額/個（円）\n';
+  rows.forEach(r=>{
+    r.history.forEach(h=>{
+      csv+=`"${h.date}","${r.name}",${h.qty},${h.cnyPer},${h.rate!=null?h.rate:'取得失敗'},${h.evalJpy}\n`;
+    });
+  });
+
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`棚卸表_${today}.csv`;a.click();
+}
+function exportTaxCSV(){
+  const ySales=salesLog.filter(s=>s.date.startsWith(_taxYear)).sort((a,b)=>a.date.localeCompare(b.date));
+  let csv='﻿確定申告用データ - '+_taxYear+'年\n\n【売上明細】\n';
+  csv+='日付,プラットフォーム,商品名,販売価格(円),手数料(円),手数料率(%),国内送料(円),仕入原価/個(円),数量(点),売上利益(円)\n';
+  ySales.forEach(s=>{
+    const plt=s.platform==='furima'?'Yahooフリマ':s.feeRate===5?'Yahooフリマ':'メルカリ';
+    const profit=Math.round((s.sellPrice-s.mercFee-(s.mship||0)-s.costPer)*s.qty);
+    csv+=`"${s.date}","${plt}","${s.name}",${s.sellPrice},${s.mercFee},${s.feeRate},${s.mship||0},${s.costPer},${s.qty},${profit}\n`;
+  });
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  a.download=`kakuteishinkoku_${_taxYear}.csv`;a.click();
+}
+
+// ====================================================
+// TOAST
+// ====================================================
+function toast(msg){
+  const el=document.createElement('div');el.textContent=msg;
+  el.style.cssText='position:fixed;bottom:72px;left:50%;transform:translateX(-50%);background:var(--gn);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:999;pointer-events:none;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis';
+  document.body.appendChild(el);setTimeout(()=>el.remove(),2500);
+}
+
+// ====================================================
+// INIT
+// ====================================================
+document.querySelectorAll('.bitem').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+initMonth();
+buildTabs();
+// calcページはいつでも呼べるよう事前に空のhtmlにしておく（レンダリングは切り替え時）
+TABS.forEach(t=>{const pg=g('pg-'+t.id);if(pg&&t.id!=='dashboard')pg.style.display='none'});
+renderCalc(); // calc は初回だけHTMLを構築しておく
+switchTab('dashboard');
+fetchRate();
+updateProvisionalRates();
+updateBkBtn();
+checkBkWarning();
+
+// 商品名入力時にIME読みを自動でよみ欄へ追加
+let _kanaComp='';
+document.addEventListener('compositionupdate',e=>{
+  if(e.target.id!=='a-name')return;
+  if(/^[぀-ヿ]+$/.test(e.data))_kanaComp=e.data;
+});
+document.addEventListener('compositionend',e=>{
+  if(e.target.id!=='a-name')return;
+  const isFinalKana=/^[぀-ヿ]+$/.test(e.data);
+  const reading=isFinalKana?e.data:_kanaComp;
+  if(reading){const el=g('a-yomi');if(el)el.value=(el.value.trim()?el.value.trim():'')+reading;}
+  _kanaComp='';
+});
+</script>
+</body>
+</html>
