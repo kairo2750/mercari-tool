@@ -350,6 +350,11 @@ tr:last-child td{border-bottom:none}
 
   <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)">📤 書き出し</div>
   <p style="font-size:13px;color:var(--text2);margin-bottom:10px;line-height:1.7">全データ（商品・仕入れ・売上・固定費・不良品）をJSONファイルとして保存します。定期的に実行してください。</p>
+  <div style="background:var(--bg2);border-radius:var(--rs);padding:10px 12px;margin-bottom:10px;font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span style="color:var(--text2)">📁 Google Drive:</span>
+    <span id="gdrive-status" style="flex:1">-</span>
+    <button class="btn" style="font-size:11px;padding:3px 8px" onclick="setGDriveFolder()">フォルダを設定</button>
+  </div>
   <button class="btn suc" style="width:100%;justify-content:center;margin-bottom:18px" onclick="backupExport()">💾 今すぐバックアップを保存</button>
 
   <hr class="dv">
@@ -2455,11 +2460,39 @@ function doImport(mode){
 // ====================================================
 // BACKUP
 // ====================================================
-function backupExport(){
+const _idb={
+  db:null,
+  open(){return new Promise((res,rej)=>{const r=indexedDB.open('mercari_app',1);r.onupgradeneeded=e=>e.target.result.createObjectStore('kv');r.onsuccess=e=>{this.db=e.target.result;res(this.db)};r.onerror=rej})},
+  async get(k){const db=this.db||await this.open();return new Promise((res,rej)=>{const r=db.transaction('kv','readonly').objectStore('kv').get(k);r.onsuccess=()=>res(r.result);r.onerror=rej})},
+  async set(k,v){const db=this.db||await this.open();return new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=res;tx.onerror=rej})}
+};
+async function setGDriveFolder(){
+  if(!window.showDirectoryPicker){alert('このブラウザはフォルダ選択に対応していません。Chrome/Edgeをお使いください。');return}
+  try{const h=await window.showDirectoryPicker({mode:'readwrite'});await _idb.set('gdrive_dir',h);updateGDriveUI();toast('✓ Google Driveフォルダを設定しました')}
+  catch(e){if(e.name!=='AbortError')toast('フォルダの設定に失敗しました')}
+}
+async function updateGDriveUI(){
+  const el=g('gdrive-status');if(!el)return;
+  const h=await _idb.get('gdrive_dir').catch(()=>null);
+  if(h)el.innerHTML=`<span style="color:var(--gn)">✓ ${h.name}</span> <button class="btn" style="font-size:11px;padding:3px 8px;margin-left:6px" onclick="setGDriveFolder()">変更</button>`;
+  else el.innerHTML=`<span style="color:var(--text3)">未設定（設定するとボタン1つで自動保存）</span>`;
+}
+async function backupExport(){
   const ts=Date.now();
   const d=JSON.stringify({v:3,ts,products,shipments,salesLog,defectLog,fixedCosts},null,2);
+  const fn='mercari_backup_'+new Date(ts).toISOString().slice(0,10).replace(/-/g,'')+'.json';
+  const dirH=await _idb.get('gdrive_dir').catch(()=>null);
+  if(dirH){
+    try{
+      const perm=await dirH.queryPermission({mode:'readwrite'});
+      const ok=perm==='granted'||(await dirH.requestPermission({mode:'readwrite'})==='granted');
+      if(ok){const fh=await dirH.getFileHandle(fn,{create:true});const w=await fh.createWritable();await w.write(d);await w.close();
+        localStorage.setItem('mbu',ts);updateBkBtn();g('bk-banner').style.display='none';
+        toast('✓ Google Driveに自動保存しました');setTimeout(()=>openBkModal(),400);return}
+    }catch(e){}
+  }
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([d],{type:'application/json'}));
-  a.download='mercari_backup_'+new Date(ts).toISOString().slice(0,10).replace(/-/g,'')+'.json';a.click();
+  a.download=fn;a.click();
   localStorage.setItem('mbu',ts);
   updateBkBtn();g('bk-banner').style.display='none';
   toast('✓ バックアップを保存しました');
@@ -2509,6 +2542,7 @@ function openBkModal(){
   }
   g('bk-imp-prev').style.display='none';
   const fi=g('bk-imp-f');if(fi)fi.value='';
+  updateGDriveUI();
   openOv('ov-backup');
 }
 function updateBkBtn(){
