@@ -145,7 +145,8 @@ tr:last-child td{border-bottom:none}
 <div class="ov" id="ov-sell"><div class="modal">
   <div class="mtitle">✓ 売上を記録 <button class="mcls" onclick="closeOv('ov-sell')">✕</button></div>
   <div id="sell-pname" style="font-weight:700;font-size:15px;color:var(--gn);margin-bottom:12px"></div>
-  <div class="fr"><div class="fg"><label>売れた日</label><input type="date" id="sell-date"></div><div class="fg" id="qty-normal-area"><label>数量</label><input type="number" id="sell-qty" value="1" min="1"><span class="ht" id="sell-hint"></span></div><div class="fg" id="price-normal-area"><label>販売価格（円）</label><input type="number" id="sell-price" min="1"></div><div class="fg" id="ship-normal-area"><label>送料（円）</label><input type="number" id="sell-ship" min="0" placeholder="デフォルト"></div></div>
+  <div class="fr"><div class="fg"><label>売れた日</label><input type="date" id="sell-date"></div><div class="fg" id="qty-normal-area"><label>数量</label><input type="number" id="sell-qty" value="1" min="1"><span class="ht" id="sell-hint"></span></div><div class="fg" id="price-normal-area"><label>販売価格（円）</label><input type="number" id="sell-price" min="1"></div></div>
+  <div id="ship-normal-area" style="margin-bottom:10px"><label style="font-size:12px;font-weight:600;display:block;margin-bottom:5px">送料（円）</label><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap"><input type="number" id="sell-ship" min="0" placeholder="直接入力" style="width:88px;padding:5px 8px"><button type="button" class="spbtn ss-btn" data-sv="85" onclick="setSellShip(85)">85</button><button type="button" class="spbtn ss-btn" data-sv="110" onclick="setSellShip(110)">110</button><button type="button" class="spbtn ss-btn" data-sv="140" onclick="setSellShip(140)">140</button><button type="button" class="spbtn ss-btn" data-sv="180" onclick="setSellShip(180)">mini 180</button><button type="button" class="spbtn ss-btn" data-sv="220" onclick="setSellShip(220)">ゆうパケポスト 220</button><button type="button" class="spbtn ss-btn" data-sv="280" onclick="setSellShip(280)">ネコポス 280</button></div></div>
   <div style="margin-bottom:10px">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
       <button type="button" id="set-toggle" class="spbtn" onclick="toggleSetMode()">🔗 セット販売</button>
@@ -888,7 +889,7 @@ function openSell(pid){
   if(g('qty-normal-area'))g('qty-normal-area').style.display='';
   if(g('sell-hint'))g('sell-hint').textContent='在庫: '+stock+'点';
   if(g('sell-price'))g('sell-price').value=p.sellPrice;
-  if(g('sell-ship'))g('sell-ship').value=p.mship||'';
+  const _ms=p.mship||0;if(g('sell-ship'))g('sell-ship').value=_ms||'';document.querySelectorAll('.ss-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.sv)===_ms&&_ms>0));
   if(g('sell-msg'))g('sell-msg').innerHTML='';
   openOv('ov-sell');
   setTimeout(()=>g('sell-qty')?.focus(),80);
@@ -1224,6 +1225,8 @@ function showProd(pid){const p=products.find(x=>x.id===pid);if(!p)return;p.hidde
 function saveProdSellPrice(pid,val){const price=parseInt(val);if(!price||price<=0)return;const p=products.find(x=>x.id===pid);if(!p)return;p.sellPrice=price;sv();renderInvRows();}
 function saveYomi(pid,val){const p=products.find(x=>x.id===pid);if(p){p.yomi=val.trim();sv()}}
 function saveMship(pid,val){const p=products.find(x=>x.id===pid);if(p){p.mship=parseInt(val)||0;sv();toast('✓ 送料を更新しました')}}
+function setSellShip(v){sv2('sell-ship',v);document.querySelectorAll('.ss-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.sv)===v));}
+function setAddShip(v){sv2('a-ship',v);document.querySelectorAll('.as-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.av)===v));}
 
 // ====================================================
 // SALES
@@ -2063,8 +2066,8 @@ function renderAdd(){
         <select id="a-cat"><option>スマホアクセサリー</option><option>ファッション</option><option>美容・コスメ</option><option>おもちゃ・ゲーム</option><option>インテリア・雑貨</option><option>スポーツ・アウトドア</option><option>家電・ガジェット</option><option>その他</option></select>
       </div>
       <div class="fg"><label>メルカリ販売価格（円）</label><input type="number" id="a-sell" placeholder="例: 2500"></div>
-      <div class="fg"><label>送料（円）</label><input type="number" id="a-ship" value="0" min="0" placeholder="例: 600"></div>
     </div>
+    <div class="fr f1"><div class="fg"><label>送料（円）</label><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-top:4px"><input type="number" id="a-ship" value="0" min="0" style="width:88px;padding:5px 8px"><button type="button" class="spbtn as-btn" data-av="85" onclick="setAddShip(85)">85</button><button type="button" class="spbtn as-btn" data-av="110" onclick="setAddShip(110)">110</button><button type="button" class="spbtn as-btn" data-av="140" onclick="setAddShip(140)">140</button><button type="button" class="spbtn as-btn" data-av="180" onclick="setAddShip(180)">mini 180</button><button type="button" class="spbtn as-btn" data-av="220" onclick="setAddShip(220)">ゆうパケポスト 220</button><button type="button" class="spbtn as-btn" data-av="280" onclick="setAddShip(280)">ネコポス 280</button></div></div></div>
     <div class="fr">
       <div class="fg"><label>在庫アラート数</label><input type="number" id="a-alert" value="3" style="max-width:80px"></div>
     </div>
@@ -2088,7 +2091,7 @@ function addProduct(){
 }
 function clrAdd(){
   ['a-name','a-yomi','a-sell','a-memo'].forEach(id=>sv2(id,''));
-  sv2('a-alert','3');sv2('a-ship','0');
+  sv2('a-alert','3');sv2('a-ship','0');document.querySelectorAll('.as-btn').forEach(b=>b.classList.remove('sel'));
 }
 function renderMaster(){
   const wrap=g('master-list');if(!wrap)return;
