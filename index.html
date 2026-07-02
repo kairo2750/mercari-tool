@@ -1224,7 +1224,7 @@ function hideProd(pid){const p=products.find(x=>x.id===pid);if(!p)return;p.hidde
 function showProd(pid){const p=products.find(x=>x.id===pid);if(!p)return;p.hidden=false;sv();renderInvRows();}
 function saveProdSellPrice(pid,val){const price=parseInt(val);if(!price||price<=0)return;const p=products.find(x=>x.id===pid);if(!p)return;p.sellPrice=price;sv();renderInvRows();}
 function saveYomi(pid,val){const p=products.find(x=>x.id===pid);if(p){p.yomi=val.trim();sv()}}
-function saveMship(pid,val){const p=products.find(x=>x.id===pid);if(p){p.mship=parseInt(val)||0;sv();toast('✓ 送料を更新しました')}}
+function saveMship(pid,val){const p=products.find(x=>x.id===pid);if(p){const m=parseInt(val)||0;p.mship=m;let c=0;salesLog.forEach(s=>{if(s.pid===pid&&!s.isSet&&!s.isBundle){s.mship=m;c++;}});sv();toast(`✓ 送料を更新${c>0?`（過去${c}件の売上にも反映）`:''}`)}}
 function setSellShip(v){sv2('sell-ship',v);document.querySelectorAll('.ss-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.sv)===v));}
 function setAddShip(v){sv2('a-ship',v);document.querySelectorAll('.as-btn').forEach(b=>b.classList.toggle('sel',parseInt(b.dataset.av)===v));}
 
