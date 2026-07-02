@@ -145,7 +145,7 @@ tr:last-child td{border-bottom:none}
 <div class="ov" id="ov-sell"><div class="modal">
   <div class="mtitle">✓ 売上を記録 <button class="mcls" onclick="closeOv('ov-sell')">✕</button></div>
   <div id="sell-pname" style="font-weight:700;font-size:15px;color:var(--gn);margin-bottom:12px"></div>
-  <div class="fr"><div class="fg"><label>売れた日</label><input type="date" id="sell-date"></div><div class="fg" id="qty-normal-area"><label>数量</label><input type="number" id="sell-qty" value="1" min="1"><span class="ht" id="sell-hint"></span></div><div class="fg" id="price-normal-area"><label>販売価格（円）</label><input type="number" id="sell-price" min="1"></div></div>
+  <div class="fr"><div class="fg"><label>売れた日</label><input type="date" id="sell-date"></div><div class="fg" id="qty-normal-area"><label>数量</label><input type="number" id="sell-qty" value="1" min="1"><span class="ht" id="sell-hint"></span></div><div class="fg" id="price-normal-area"><label>販売価格（円）</label><input type="number" id="sell-price" min="1"></div><div class="fg" id="ship-normal-area"><label>送料（円）</label><input type="number" id="sell-ship" min="0" placeholder="デフォルト"></div></div>
   <div style="margin-bottom:10px">
     <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
       <button type="button" id="set-toggle" class="spbtn" onclick="toggleSetMode()">🔗 セット販売</button>
@@ -888,6 +888,7 @@ function openSell(pid){
   if(g('qty-normal-area'))g('qty-normal-area').style.display='';
   if(g('sell-hint'))g('sell-hint').textContent='在庫: '+stock+'点';
   if(g('sell-price'))g('sell-price').value=p.sellPrice;
+  if(g('sell-ship'))g('sell-ship').value=p.mship||'';
   if(g('sell-msg'))g('sell-msg').innerHTML='';
   openOv('ov-sell');
   setTimeout(()=>g('sell-qty')?.focus(),80);
@@ -918,7 +919,9 @@ function confirmSell(){
     const costPer=getFifoCost(_spid,qty);
     const actualSellPrice=parseInt(gv('sell-price'))||p.sellPrice;
     const mercFee=Math.round(actualSellPrice*fr);
-    salesLog.push({pid:_spid,name:p.name,cat:p.cat,sellPrice:actualSellPrice,mship:p.mship,mercFee,feeRate:fr*100,platform:_sellPlatform,costPer,qty,date,ts:Date.now()});
+    const shipInput=parseInt(gv('sell-ship'));
+    const actualMship=isNaN(shipInput)||gv('sell-ship')===''?p.mship:shipInput;
+    salesLog.push({pid:_spid,name:p.name,cat:p.cat,sellPrice:actualSellPrice,mship:actualMship,mercFee,feeRate:fr*100,platform:_sellPlatform,costPer,qty,date,ts:Date.now()});
     sv();closeOv('ov-sell');renderActive();toast(`✓ ${p.name} ×${qty}個 を記録`);
   }
 }
@@ -1220,6 +1223,7 @@ function hideProd(pid){const p=products.find(x=>x.id===pid);if(!p)return;p.hidde
 function showProd(pid){const p=products.find(x=>x.id===pid);if(!p)return;p.hidden=false;sv();renderInvRows();}
 function saveProdSellPrice(pid,val){const price=parseInt(val);if(!price||price<=0)return;const p=products.find(x=>x.id===pid);if(!p)return;p.sellPrice=price;sv();renderInvRows();}
 function saveYomi(pid,val){const p=products.find(x=>x.id===pid);if(p){p.yomi=val.trim();sv()}}
+function saveMship(pid,val){const p=products.find(x=>x.id===pid);if(p){p.mship=parseInt(val)||0;sv();toast('✓ 送料を更新しました')}}
 
 // ====================================================
 // SALES
@@ -2059,6 +2063,7 @@ function renderAdd(){
         <select id="a-cat"><option>スマホアクセサリー</option><option>ファッション</option><option>美容・コスメ</option><option>おもちゃ・ゲーム</option><option>インテリア・雑貨</option><option>スポーツ・アウトドア</option><option>家電・ガジェット</option><option>その他</option></select>
       </div>
       <div class="fg"><label>メルカリ販売価格（円）</label><input type="number" id="a-sell" placeholder="例: 2500"></div>
+      <div class="fg"><label>送料（円）</label><input type="number" id="a-ship" value="0" min="0" placeholder="例: 600"></div>
     </div>
     <div class="fr">
       <div class="fg"><label>在庫アラート数</label><input type="number" id="a-alert" value="3" style="max-width:80px"></div>
@@ -2075,14 +2080,15 @@ function addProduct(){
   const name=gv('a-name').trim(),sell=parseFloat(gv('a-sell'))||0;
   const alert=parseInt(gv('a-alert'))||3,cat=gv('a-cat'),memo=gv('a-memo').trim();
   const yomi=gv('a-yomi').trim();
+  const mship=parseInt(gv('a-ship'))||0;
   if(!name){showMsg('add-msg','商品名を入力してください','err');return}
   if(!sell){showMsg('add-msg','販売価格を入力してください','err');return}
-  products.push({id:Date.now(),name,cat,sellPrice:sell,mship:0,alert,memo,yomi});
+  products.push({id:Date.now(),name,cat,sellPrice:sell,mship,alert,memo,yomi});
   sv();showMsg('add-msg','✓ 登録しました！','ok');clrAdd();renderMaster();
 }
 function clrAdd(){
   ['a-name','a-yomi','a-sell','a-memo'].forEach(id=>sv2(id,''));
-  sv2('a-alert','3');
+  sv2('a-alert','3');sv2('a-ship','0');
 }
 function renderMaster(){
   const wrap=g('master-list');if(!wrap)return;
@@ -2100,10 +2106,13 @@ function renderMaster(){
     </td>
     <td><span class="tag">${p.cat}</span></td>
     <td>${fy(p.sellPrice)}</td>
+    <td><input type="number" value="${p.mship||0}" min="0"
+      style="font-size:12px;padding:2px 5px;border:0.5px solid var(--border2);border-radius:4px;background:var(--bg);color:var(--text);width:80px;text-align:right"
+      onchange="saveMship(${p.id},this.value)"> 円</td>
     <td>${p.alert}点</td>
     <td><button class="btn dan" style="font-size:11px;padding:4px 7px;min-height:0" onclick="delProd(${p.id})">削除</button></td>
   </tr>`).join('');
-  wrap.innerHTML=`<div class="tw"><table><thead><tr><th>商品名 / よみ</th><th>カテゴリ</th><th>販売価格</th><th>アラート</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  wrap.innerHTML=`<div class="tw"><table><thead><tr><th>商品名 / よみ</th><th>カテゴリ</th><th>販売価格</th><th>送料</th><th>アラート</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
 // ====================================================
