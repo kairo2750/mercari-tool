@@ -1256,7 +1256,7 @@ function renderSales(){
     const priceVal=s.isSet?s.setPrice:s.sellPrice;
     const priceInput=`<input type="number" value="${priceVal}" min="1" style="width:80px;font-size:13px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;text-align:right" onchange="saveSalePrice(${s.ts},this.value)">`;
     return`<tr><td>${s.date}</td><td style="font-weight:600">${s.name}</td><td>${qtyLabel}</td>
-      <td>${priceInput}</td><td style="color:var(--rd)">-${fy(s.mercFee*s.qty)}</td><td>${fy(s.costPer)}</td>
+      <td>${priceInput}</td><td style="color:var(--rd)">-${fy(s.mercFee*s.qty)}</td><td style="color:var(--rd)">-${fy(s.mship)}</td><td>${fy(s.costPer)}</td>
       <td class="${pr>=0?'pp':'pn'}">${fy(pr)}</td>
       <td><button class="btn dan" style="font-size:11px;padding:4px 7px;min-height:0" onclick="delSale(${s.ts})">取消</button></td></tr>`;
   }).join('');
@@ -1270,7 +1270,7 @@ function renderSales(){
     <div class="met"><div class="ml">純利益</div><div class="mv ${profit>=0?'g':'r'}">${fy(profit)}</div></div>
     <div class="met"><div class="ml">利益率</div><div class="mv ${profit>=0?'g':'r'}">${rev>0?((profit/rev)*100).toFixed(1):0}%</div></div>
   </div>
-  <div class="tw"><table><thead><tr><th>日付</th><th>商品名</th><th>数量</th><th>売上</th><th>手数料</th><th>原価/個</th><th>利益</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  <div class="tw"><table><thead><tr><th>日付</th><th>商品名</th><th>数量</th><th>売上</th><th>手数料</th><th>送料</th><th>原価/個</th><th>利益</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 function delSale(ts){if(confirm('この売上を取り消しますか？')){salesLog=salesLog.filter(s=>s.ts!==ts);sv();renderSales()}}
 function saveSalePrice(ts,val){
