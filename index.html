@@ -2570,7 +2570,7 @@ function checkBkWarning(){
   const banner=g('bk-banner');if(!banner)return;
   if(days>=7){
     const msg=g('bk-banner-msg');
-    if(msg)msg.textContent=ts?`⚠️ 最後のバックアップから ${days} 日経過しています。データ消失リスクがあります。`:'⚠️ まだバックアップが保存されていません。データ消失リスクがあります。';
+    if(msg)msg.textContent='⚠️ 今すぐバックアップしろもものすけ！！';
     banner.style.display='flex';
   }
 }
