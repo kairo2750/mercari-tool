@@ -366,6 +366,15 @@ tr:last-child td{border-bottom:none}
   <div id="bk-imp-prev" style="display:none;margin-top:10px;font-size:12px;color:var(--text2);line-height:1.8;background:var(--bg2);border-radius:var(--rs);padding:12px"></div>
 </div></div>
 
+<div id="login-gate" style="display:none;position:fixed;inset:0;background:var(--bg3);z-index:999;align-items:center;justify-content:center;padding:16px">
+  <div class="modal" style="max-width:340px;text-align:center">
+    <div style="font-weight:700;font-size:15px;margin-bottom:14px">🔒 パスワードを入力してください</div>
+    <input type="password" id="login-gate-pw" placeholder="合言葉" autocomplete="off">
+    <div id="login-gate-err" style="color:var(--rd);font-size:12px;min-height:18px;margin-top:8px"></div>
+    <button class="btn pri" id="login-gate-btn" style="width:100%;margin-top:6px">入る</button>
+  </div>
+</div>
+
 <script>
 // ====================================================
 // STATE
@@ -387,7 +396,57 @@ let _setMode = false;
 let _taxLoadGen = 0;
 
 function jl(k,d){try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}}
-function sv(){localStorage.setItem('mp',JSON.stringify(products));localStorage.setItem('ms',JSON.stringify(shipments));localStorage.setItem('msl',JSON.stringify(salesLog));localStorage.setItem('mdl',JSON.stringify(defectLog));localStorage.setItem('mfc',JSON.stringify(fixedCosts))}
+function sv(){
+  localStorage.setItem('mp',JSON.stringify(products));localStorage.setItem('ms',JSON.stringify(shipments));localStorage.setItem('msl',JSON.stringify(salesLog));localStorage.setItem('mdl',JSON.stringify(defectLog));localStorage.setItem('mfc',JSON.stringify(fixedCosts));
+  syncSave();
+}
+
+// ====================================================
+// SERVER SYNC（複数PCでのデータ共有）
+// ====================================================
+let _syncTimer=null;
+function syncSave(){
+  clearTimeout(_syncTimer);
+  _syncTimer=setTimeout(async()=>{
+    const pass=localStorage.getItem('mauth');if(!pass)return;
+    try{
+      const r=await fetch('/api/data',{method:'POST',headers:{'Content-Type':'application/json','x-app-pass':pass},body:JSON.stringify({products,shipments,salesLog,defectLog,fixedCosts})});
+      if(r.status===401){localStorage.removeItem('mauth');await showLoginGate('パスワードが違います。再入力してください。');syncSave()}
+      else if(!r.ok){toast('⚠ サーバーへの同期に失敗しました')}
+    }catch(e){toast('⚠ オフラインのためローカルにのみ保存しました')}
+  },500);
+}
+async function syncLoad(){
+  let pass=localStorage.getItem('mauth');
+  if(!pass)pass=await showLoginGate();
+  try{
+    const r=await fetch('/api/data',{headers:{'x-app-pass':pass}});
+    if(r.status===401){localStorage.removeItem('mauth');pass=await showLoginGate('パスワードが違います。再入力してください。');return syncLoad()}
+    if(!r.ok)throw 0;
+    const d=await r.json();
+    products=d.products||[];shipments=d.shipments||[];salesLog=d.salesLog||[];defectLog=d.defectLog||[];fixedCosts=d.fixedCosts||[];
+    localStorage.setItem('mp',JSON.stringify(products));localStorage.setItem('ms',JSON.stringify(shipments));localStorage.setItem('msl',JSON.stringify(salesLog));localStorage.setItem('mdl',JSON.stringify(defectLog));localStorage.setItem('mfc',JSON.stringify(fixedCosts));
+  }catch(e){
+    toast('⚠ サーバーに接続できないためローカルのデータを表示しています');
+  }
+}
+function showLoginGate(msg){
+  return new Promise(res=>{
+    const gate=g('login-gate');
+    g('login-gate-err').textContent=msg||'';
+    gate.style.display='flex';
+    const input=g('login-gate-pw');input.value='';
+    const submit=()=>{
+      const v=input.value.trim();if(!v)return;
+      localStorage.setItem('mauth',v);
+      gate.style.display='none';
+      res(v);
+    };
+    g('login-gate-btn').onclick=submit;
+    input.onkeydown=e=>{if(e.key==='Enter')submit()};
+    setTimeout(()=>input.focus(),50);
+  });
+}
 
 // ====================================================
 // HELPERS
@@ -2900,16 +2959,19 @@ function toast(msg){
 // INIT
 // ====================================================
 document.querySelectorAll('.bitem').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
-initMonth();
-buildTabs();
-// calcページはいつでも呼べるよう事前に空のhtmlにしておく（レンダリングは切り替え時）
-TABS.forEach(t=>{const pg=g('pg-'+t.id);if(pg&&t.id!=='dashboard')pg.style.display='none'});
-renderCalc(); // calc は初回だけHTMLを構築しておく
-switchTab('dashboard');
-fetchRate();
-updateProvisionalRates();
-updateBkBtn();
-checkBkWarning();
+(async()=>{
+  await syncLoad(); // 複数PCで共有しているサーバーの最新データを読み込んでから描画する
+  initMonth();
+  buildTabs();
+  // calcページはいつでも呼べるよう事前に空のhtmlにしておく（レンダリングは切り替え時）
+  TABS.forEach(t=>{const pg=g('pg-'+t.id);if(pg&&t.id!=='dashboard')pg.style.display='none'});
+  renderCalc(); // calc は初回だけHTMLを構築しておく
+  switchTab('dashboard');
+  fetchRate();
+  updateProvisionalRates();
+  updateBkBtn();
+  checkBkWarning();
+})();
 
 // 商品名入力時にIME読みを自動でよみ欄へ追加
 let _kanaComp='';
